@@ -360,3 +360,14 @@ form input:focus {
   content: "Signup" !important;
   font-size: 1.8rem;
 }
+
+
+.change3 button:hover::before {
+  content: "Forgot Password";
+  font-size: 1.8rem;
+}
+
+.change3 button:hover::before {
+  content: "Signup" !important;
+  font-size: 1.8rem;
+}
