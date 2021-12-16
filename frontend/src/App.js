@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense } from "react";
+import React, { useState, lazy, Suspense, useContext } from "react";
 import Signup from "./Components/Part/Signup";
 import Login from "./Components/Part/Login";
 import Admin from "./Components/Part/Admin";
@@ -7,12 +7,12 @@ import Resources from "./Components/Part/Resources";
 import College from "./Components/Part/College";
 import Profile from "./Components/Part/Profile";
 import "./App.css";
-import ContextProvider from "./ContextProvider/ContextProvider";
+import {AuthContext, AuthContextProvider} from "./ContextProvider/ContextProvider";
 import HashTag from "./Components/Part/Hashtagss";
 import SearchResources from "./Components/Part/SearchPage";
 import UserProfile from "./Components/Part/UserProfile";
 import HashTagCollege from "./Components/Part/HashTagPosts";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import SearchUser from "./Components/Part/SearchUser";
 import UserProvider from "./ContextProvider/UserProvider";
 import AccountProvider from "./ContextProvider/AccountProvider";
@@ -21,25 +21,26 @@ import { CircularProgress } from "@material-ui/core";
 import ForgetPassword from "./Components/Part/ForgetPassword";
 import VerifyLink from "./Components/Part/VerifyLink";
 // import Messenger from "./Components/Messenger";
-const Messenger = lazy(() => import('./Components/Part/Messenger/ChatDialog'))
+const Messenger = lazy(() => import('./Components/Part/Messenger/ChatDialog'));
 function App() {
+  const {user} = useContext(AuthContext);
   return (
     <React.Fragment>
-      <UserProvider>
+      <AuthContextProvider>
         <AccountProvider>
           <Router>
             <Switch>
               <Route exact path="/">
-                {localStorage.getItem("jwt") ? <Home /> : <Signup />}
+                {user ? <Home /> : <Signup />}
               </Route>
               <Route exact path="/messenger">
                 <Suspense fallback={<CircularProgress />}>
-                <Messenger/>
+                  <Messenger />
                 </Suspense>
               </Route>
 
               <Route exact path="/Login">
-                <Login />
+              { user ? <Redirect to="/home"/> : <Login />}
               </Route>
 
               <Route exact path="/resources">
@@ -59,7 +60,7 @@ function App() {
               </Route>
 
               <Route exact path="/home">
-                <Home />
+                {user ? <Home /> : <Login />}
               </Route>
 
               <Route exact path="/hashtag">
@@ -75,12 +76,12 @@ function App() {
               </Route>
 
               <Route exact path="/forgotpassword">
-                <ForgetPassword/>
-                </Route>
+                <ForgetPassword />
+              </Route>
 
               <Route exact path="/verifyLink">
-                 <VerifyLink/> 
-              </Route>  
+                <VerifyLink />
+              </Route>
 
               <Route exact path="/searchUser">
                 <SearchUser />
@@ -93,7 +94,7 @@ function App() {
             </Switch>
           </Router>
         </AccountProvider>
-      </UserProvider>
+      </AuthContextProvider>
     </React.Fragment>
   );
 }

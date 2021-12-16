@@ -1,12 +1,12 @@
 import React, { useContext, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "./Signup.css";
 import "./Login.css";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import { LoginContext } from "../../ContextProvider/ContextProvider";
-import { AccountContext } from "../../ContextProvider/AccountProvider";
+import { AuthContext } from "../../ContextProvider/ContextProvider";
+
 import "react-circular-progressbar/dist/styles.css";
 import { Helmet } from "react-helmet";
 import ChangingProgressProvider from "./ChangingProgress";
@@ -19,7 +19,7 @@ const LoginValues = {
 };
 
 const Login = (props) => {
-  const { account, setAccount,showloginButton, setShowloginButton, showlogoutButton, setShowlogoutButton } = useContext(AccountContext);
+  const {user,isFetching,dispatch} = useContext(AuthContext);
   const [isActive, setActive] = useState("false");
   const [login, setLogin] = useState(LoginValues);
   const [show, setShow] = useState(false);
@@ -37,43 +37,61 @@ const Login = (props) => {
 
   const LoginUser = async (e) => {
     e.preventDefault();
-    let res1;
-    setShow(true);
-    if (login.email != "" && login.password != " ") {
+    dispatch({type:"LOGIN_START"});
+  
+    try{
       const url = `${API}/login`;
       const res = await axios.post(url, login);
-      res1 = res.data;
-
-      console.log(res1);
-      console.log("efvbhwefb");
-    } else {
-      console.log("Fake");
-      setError("Please Enter your Email and Password");
-      setShow(false);
-      return;
-    }
-
-    if (res1) {
-      if (res1.error) {
-        console.log("Fake");
-        setError("Invalid Credentials");
-        setShow(false);
-        return;
-      } else {
-        console.log(res1.token);
-        console.log(res1.user._id);
-        localStorage.setItem("id",res1.user._id);
-        setAccount(res1.user);
-        setShowloginButton(false);
-        setShowlogoutButton(true);
-        localStorage.setItem("jwt", res1.token);
-        localStorage.setItem("user", JSON.stringify(res1.user));
-        // console.log(JSON.parse(localStorage.getItem("user")).isAdmin);
-        history.push("/home");
-        setShow(false);
+      console.log("Checking");
+      console.log(res.data);
+      if(res.status===201){
+        
+        dispatch({type:"LOGIN_SUCCESS",payload:res.data.user});
+        localStorage.setItem("jwt",res.data.token);
+       window.location.reload();
       }
+  }catch(e){
+      dispatch({type:"LOGIN_FAILURE",payload:e});
+  }
+
+    // e.preventDefault();
+    // let res1;
+    // setShow(true);
+    // if (login.email != "" && login.password != "") {
+    //   const url = `${API}/login`;
+    //   const res = await axios.post(url, login);
+
+    //   console.log(res);
+
+    //     if (res.data.error) {
+    //       console.log("Fake");
+    //       setError("Invalid Credentials");
+    //       setShow(false);
+    //       return;
+    //     } else if(res.status===201) {
+    //       console.log(res.data.token);
+    //       console.log(res.data.user._id);
+    //       localStorage.setItem("id",res.data.user._id);
+    //       console.log(res.data.user);
+    //       setAccount(res.data.user);
+    //       setShowloginButton(false);
+    //       setShowlogoutButton(true);
+    //       localStorage.setItem("jwt", res.data.token);
+    //       localStorage.setItem("user", JSON.stringify(res.data.user));
+    //       // window.location.reload();
+    //       // console.log(JSON.parse(localStorage.getItem("user")).isAdmin);
+    //       history.push("/home");
+    //       setShow(false);
+    //     }
+    // } else {
+    //   console.log("Fake");
+    //   setError("Please Enter your Email and Password");
+    //   setShow(false);
+    //   return;
+
+
+
     }
-  };
 
   return (
     <div className="login signup">

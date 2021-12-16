@@ -28,6 +28,7 @@ const SignupValues = {
   email: "",
   password: "",
   university: "",
+  avatar:""
 };
 
 const Login = (props) => {
@@ -55,7 +56,7 @@ const Login = (props) => {
     e.preventDefault();
     console.log(e.target.src);
     setAvatars(e.target.src);
-    setSignup({ ...signup, [avatar]: avatar });
+    setSignup({ ...signup, avatar: avatar });
     console.log(signup);
   };
 
@@ -78,7 +79,7 @@ const Login = (props) => {
     e.preventDefault();
     if (/.+@.+\.[A-Za-z]+$/.test(signup.email)) {
       const url = `${API}/signup`;
-      const res1 = await axios.post(url, { signup, avatar });
+      const res1 = await axios.post(url, signup);
       if (res1) {
         history.push("/Login");
         setShow(false);

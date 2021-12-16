@@ -13,7 +13,7 @@ import { Helmet } from "react-helmet";
 import CollegeQuestion from "./CollegeQuestion";
 import { API } from "./API";
 export default function Profile() {
-  const { account, setAccount } = useContext(LoginContext);
+  // const { account, setAccount } = useContext(LoginContext);
   const [user, setUser] = useState([]);
   const [posts, setUserPosts] = useState([]);
   const [univ, setUniv] = useState([]);

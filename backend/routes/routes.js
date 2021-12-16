@@ -61,9 +61,9 @@ router.post("/signup", async(req, res) => {
                 //     }
                 // })
 
-                const t = crypto.randomBytes(32).toString('hex');
-                await Token({token:t,email:email}).save();
-                mail.sendVerificationEmail(email,t);
+                // const t = crypto.randomBytes(32).toString('hex');
+                // await Token({token:t,email:email}).save();
+                // mail.sendVerificationEmail(email,t);
 
 
         

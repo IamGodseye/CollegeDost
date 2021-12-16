@@ -1,21 +1,33 @@
-import React from 'react'
+import { createContext, useEffect, useReducer } from "react";
+import AuthReducer from "../reducers/AuthReducer";
 
-const { createContext, useState } = require("react")
-
-
-export const LoginContext = createContext(null);
-
-
-const ContextProvider=({children})=>{
-    const[account,setAccount]=useState(null);
-    
-
-    return(
-        <LoginContext.Provider value={{account,setAccount}}>
-           {children}
-        </LoginContext.Provider>
-    );
+const INITIAL_STATE = {
+    user: JSON.parse(localStorage.getItem("user")) || null,
+    isFetching: false,
+    error: false,
 }
 
+export const AuthContext = createContext(INITIAL_STATE);
+export const AuthContextProvider = ({ children }) => {
+    const [state, dispatch] = useReducer(AuthReducer,INITIAL_STATE);
+    useEffect(()=>{
+        console.log(dispatch);
+        console.log(state);
+        localStorage.setItem("user",JSON.stringify(state.user));
+    },[state.user]);
 
-export default ContextProvider;
+    return (
+        <AuthContext.Provider
+            value={{
+                user: state.user,
+                isFetching: state.isFetching,
+                error: state.error,
+                dispatch
+            }}
+        >
+
+            {children}
+
+        </AuthContext.Provider>
+    );
+}

@@ -76,11 +76,11 @@ export default function Header() {
                   Resources
                 </Link>
               </li>
-              <li class="nav-item">
+              {/* <li class="nav-item">
                 <Link class="nav-link" to="/Messenger">
                   Messenger
                 </Link>
-              </li>
+              </li> */}
               {/* <li class="nav-item dropdown">
                 <a
                   class="nav-link dropdown-toggle"
