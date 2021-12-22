@@ -1,16 +1,37 @@
-export const getCollegePostReducer = (state={posts:[]},action)=>{
+export const dislikePostCollegePost = (state={posts:[]},action)=>{
     switch(action.type){
-        case 'GET_CLG_POST_REQ':
+        case 'DISLIKE_CLG_POST_REQ':
             return {
                 ...state,
                 loading:true
             }
-        case 'GET_CLG_POST_SUCCESS':
+        case 'DISLIKE_CLG_POST_SUCCESS':
             return {
                 posts:action.payload,
                 loading:false
             }
-        case 'GET_CLG_POST_FAIL':
+        case 'DISLIKE_CLG_POST_FAIL':
+            return {
+                error:action.payload,
+                loading:false
+            }   
+        default: return state     
+    }
+}
+
+export const dislikePostMainPost = (state={posts:[]},action)=>{
+    switch(action.type){
+        case 'DISLIKE_MAIN_POST_REQ':
+            return {
+                ...state,
+                loading:true
+            }
+        case 'DISLIKE_MAIN_POST_SUCCESS':
+            return {
+                posts:action.payload,
+                loading:false
+            }
+        case 'DISLIKE_MAIN_POST_FAIL':
             return {
                 error:action.payload,
                 loading:false
