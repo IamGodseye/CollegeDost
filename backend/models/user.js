@@ -35,6 +35,27 @@ const userSchema = new mongoose.Schema({
         default: false
     },
 
+    followers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+
+    }],
+
+    following: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }],
+
+    blockedUsers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }],
+
+    blockedBy: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }],
+
     isAdmin: {
         type: Boolean,
         default: false
@@ -48,14 +69,14 @@ const userSchema = new mongoose.Schema({
 
 });
 
-userSchema.methods.createResetToken = async() => {
+userSchema.methods.createResetToken = async () => {
     console.log("Method")
     const resetToken = crypto.randomBytes(32).toString('hex');
     this.resetToken = resetToken;
     return resetToken;
 }
 
-userSchema.methods.resetPasswordHandler = async(password) => {
+userSchema.methods.resetPasswordHandler = async (password) => {
     console.log("PASSWORD")
     this.password = password;
 }

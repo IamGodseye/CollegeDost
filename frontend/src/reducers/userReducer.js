@@ -18,3 +18,72 @@ export const getUser = (state={user:{}},action)=>{
         default: return state     
     }
 }
+
+export const blockUser =  (state={user:{}},action)=>{
+    switch(action.type){
+        case 'BLOCK_USER_REQUEST':
+            return {
+                ...state,
+                loading:true
+            }
+        case 'BLOCK_USER_SUCCESS':
+            return {
+                    user:action.payload,
+                    loading:false
+            }    
+    }
+}
+
+export const unblockUser =  (state={user:{}},action)=>{
+
+    switch(action.type){
+        case 'UNBLOCK_USER_REQUEST':
+            return {
+                ...state,
+                loading:true
+            }
+        case 'UNBLOCK_USER_SUCCESS':
+            return {
+                    user:action.payload,
+                    loading:false
+            }    
+        
+    }
+    
+}
+
+export const followUser =  (state={user:{}},action)=>{
+
+    switch(action.type){
+        case 'FOLLOW_USER_REQUEST':
+            return {
+                ...state,
+                loading:true
+            }
+        case 'FOLLOW_USER_SUCCESS':
+            return {
+                    user:action.payload,
+                    loading:false
+            }    
+        
+    }
+    
+}
+
+export const unfollowUser =  (state={user:{}},action)=>{
+
+    switch(action.type){
+        case 'UNFOLLOW_USER_REQUEST':
+            return {
+                ...state,
+                loading:true
+            }
+        case 'UNFOLLOW_USER_SUCCESS':
+            return {
+                    user:action.payload,
+                    loading:false
+            }    
+        
+    }
+    
+}

@@ -90,9 +90,9 @@ export default function HashTagCollege({match}) {
     }
       
       <div className="secnav-items add-Question">
-        <button className="btn btn-outline-success">
+        {/* <button className="btn btn-outline-success">
           <b>+</b>
-        </button>
+        </button> */}
       </div>
     </div>
     </div>

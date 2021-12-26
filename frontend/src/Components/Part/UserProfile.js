@@ -67,7 +67,6 @@ const  UserProfile=() =>{
   return (
     <div className="profile">
        <Helmet>
-
 <title>{user.name}</title>
 </Helmet>
       <Header />
@@ -83,6 +82,14 @@ const  UserProfile=() =>{
           <div>{user.email}</div>
           <div>{user.university}</div>
           <div> Posts : {posts.length+univ.length}</div>
+          <div>
+          <span>0 Followers</span>
+          </div>
+          <div>
+          <span>0 Following</span>
+          </div>
+          <button className="follows" >Follow</button>
+          <button className="blocks" >Block</button>
         </div>
         <div className="profile_post">
           Questions Posted

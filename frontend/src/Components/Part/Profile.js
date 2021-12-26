@@ -72,6 +72,7 @@ export default function Profile() {
           <div>{user.email}</div>
           <div>{user.university}</div>
           <div> Posts : {posts.length + univ.length}</div>
+          <button className="edits">Edit Profile</button>
         </div>
 
         <div className="profile_post">

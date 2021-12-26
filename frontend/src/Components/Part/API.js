@@ -1,1 +1,1 @@
-export const API = 'https://collegedost.herokuapp.com';
+export const API = 'http://localhost:4000';

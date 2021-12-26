@@ -14,23 +14,23 @@ const AdminPosts = mongoose.model('AdminPosts');
 const HashtagPost = mongoose.model("hashtagPost");
 const HashTagUniv = mongoose.model("hashtagUnivPost");
 const AllComment = mongoose.model("AllComments");
+const Chats = require('../models/Conversation');
 const Message = require('../models/Messages');
-const Conversation = require('../models/Conversation');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const mail = require('./mail');
 const Token = require('../models/resetToken');
 
-const trans =  nodemailer.createTransport({
-    service:"Gmail",
-    auth:{
-        user:"harshitr2001@gmail.com",
-        pass:""
+const trans = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+        user: "harshitr2001@gmail.com",
+        pass: ""
     }
 });
 
 
-router.post("/signup", async(req, res) => {
+router.post("/signup", async (req, res) => {
     console.log(req.body);
 
     const { email, password, name, university } = req.body;
@@ -43,7 +43,7 @@ router.post("/signup", async(req, res) => {
         }
 
         b.hash(password, 8)
-            .then(async(hashedpassword) => {
+            .then(async (hashedpassword) => {
                 const user = new User({
                     email,
                     password: hashedpassword,
@@ -66,8 +66,8 @@ router.post("/signup", async(req, res) => {
                 // mail.sendVerificationEmail(email,t);
 
 
-        
-                 user.save()
+
+                user.save()
                     .then(user => {
                         res.json({ message: "saved" })
                     })
@@ -99,8 +99,8 @@ router.post("/login", async (req, res) => {
                         const token = jwt.sign({ _id: SavedUser._id }, "CollegeDostJS")
                         console.log(token);
 
-                        const { _id, name, email, university, avatar, isAdmin ,confirmed} = SavedUser;
-                        return res.status(201).json({ token, user: { _id, name, email, university, avatar, isAdmin,confirmed } });
+                        const { _id, name, email, university, avatar, isAdmin, confirmed } = SavedUser;
+                        return res.status(201).json({ token, user: { _id, name, email, university, avatar, isAdmin, confirmed } });
                     } else {
                         console.log("Fake");
                         return res.status(201).send({ error: 'Invalid email or password' })
@@ -212,11 +212,11 @@ router.post("/createuniversitypost", reqLogin, async (req, res) => {
 
 
 
-router.get('/globalposts', async(req, res) => {
+router.get('/globalposts', async (req, res) => {
     await AllPost.find()
         .sort('-createdAt')
-        .populate("postedBy","email name university avatar _id")
-        .populate("comments.commentedBy","name email _id avatar")
+        .populate("postedBy", "email name university avatar _id")
+        .populate("comments.commentedBy", "name email _id avatar")
         .then(posts => {
             res.json({ posts })
             // console.log(posts)
@@ -227,11 +227,11 @@ router.get('/globalposts', async(req, res) => {
 });
 
 
-router.get('/universityPosts', reqLogin, async(req, res) => {
-   await UnivPost.find({ university: req.user.university })
+router.get('/universityPosts', reqLogin, async (req, res) => {
+    await UnivPost.find({ university: req.user.university })
         .sort('-createdAt')
-        .populate("postedBy","email name university avatar _id")
-        .populate("comments.commentedBy","email name university avatar _id")
+        .populate("postedBy", "email name university avatar _id")
+        .populate("comments.commentedBy", "email name university avatar _id")
         .then(post => {
             res.json({ post })
         })
@@ -251,10 +251,10 @@ router.put('/mainlike', reqLogin, (req, res) => {
     }, {
         new: true
     })
-    .populate("postedBy", "name _id avatar").then((s)=>{
-        console.log(s)
-        res.status(201).json(s)
-    })
+        .populate("postedBy", "name _id avatar").then((s) => {
+            console.log(s)
+            res.status(201).json(s)
+        })
 });
 
 router.post('/addUniversity', (req, res) => {
@@ -281,32 +281,32 @@ router.post('/getUserDetails', (req, res) => {
 
 
 
-router.put('/takebackmainlike', reqLogin, async(req, res) => {
+router.put('/takebackmainlike', reqLogin, async (req, res) => {
     console.log(req.body.id)
-   await AllPost.findByIdAndUpdate(req.body.id, {
+    await AllPost.findByIdAndUpdate(req.body.id, {
         $pull: {
             likes: req.user._id
         }
     }, {
         new: true
     })
-    .populate("postedBy", "name _id avatar").then((s)=>{
-        console.log(s)
-        res.status(201).json(s)
-    })
-        // .populate("comments.postedBy", "_id name")
-        // .exec((err, result) => {
-        //     if (err) {
-        //         res.status(422).json({ error: err })
-        //     } else {
-        //         res.json(result);
-        //         console.log(result);
-        //     }
-        // })
+        .populate("postedBy", "name _id avatar").then((s) => {
+            console.log(s)
+            res.status(201).json(s)
+        })
+    // .populate("comments.postedBy", "_id name")
+    // .exec((err, result) => {
+    //     if (err) {
+    //         res.status(422).json({ error: err })
+    //     } else {
+    //         res.json(result);
+    //         console.log(result);
+    //     }
+    // })
 });
 
 
-router.put('/maindislike', reqLogin, async(req, res) => {
+router.put('/maindislike', reqLogin, async (req, res) => {
     console.log(req.body.id)
     await AllPost.findByIdAndUpdate(req.body.id, {
         $push: {
@@ -315,19 +315,19 @@ router.put('/maindislike', reqLogin, async(req, res) => {
     }, {
         new: true
     })
-    .populate("postedBy", "name _id avatar").then((s)=>{
-        res.status(201).json(s)
-    })
-        // .populate("postedBy", "_id name avatar")
-        // .populate("comments.postedBy", "_id name")
-        // .exec((err, result) => {
-        //     if (err) {
-        //         res.status(422).json({ error: err })
-        //     } else {
-        //         res.json(result);
-        //         console.log(result)
-        //     }
-        // })
+        .populate("postedBy", "name _id avatar").then((s) => {
+            res.status(201).json(s)
+        })
+    // .populate("postedBy", "_id name avatar")
+    // .populate("comments.postedBy", "_id name")
+    // .exec((err, result) => {
+    //     if (err) {
+    //         res.status(422).json({ error: err })
+    //     } else {
+    //         res.json(result);
+    //         console.log(result)
+    //     }
+    // })
 });
 
 router.put('/univdislike', reqLogin, (req, res) => {
@@ -339,23 +339,23 @@ router.put('/univdislike', reqLogin, (req, res) => {
     }, {
         new: true
     })
-    .populate("postedBy", "name _id avatar").then((s)=>{
-        res.status(201).json(s)
-    })
-        // .populate("postedBy", "_id name avatar")
-        // .populate("comments.postedBy", "_id name")
-        // .exec((err, result) => {
-        //     if (err) {
-        //         res.status(422).json({ error: err })
-        //     } else {
-        //         res.json(result);
-        //         console.log(result)
-        //     }
-        // })
+        .populate("postedBy", "name _id avatar").then((s) => {
+            res.status(201).json(s)
+        })
+    // .populate("postedBy", "_id name avatar")
+    // .populate("comments.postedBy", "_id name")
+    // .exec((err, result) => {
+    //     if (err) {
+    //         res.status(422).json({ error: err })
+    //     } else {
+    //         res.json(result);
+    //         console.log(result)
+    //     }
+    // })
 });
 
 
-router.put('/takebackmaindislike', reqLogin, async(req, res) => {
+router.put('/takebackmaindislike', reqLogin, async (req, res) => {
     await AllPost.findByIdAndUpdate(req.body.id, {
         $pull: {
             dislikes: req.user._id
@@ -363,66 +363,66 @@ router.put('/takebackmaindislike', reqLogin, async(req, res) => {
     }, {
         new: true
     })
-    .populate("postedBy", "name _id avatar").then((s)=>{
-        res.status(201).json(s)
-    })
-        // .populate("postedBy", "_id name pic ")
-        // .populate("comments.postedBy", "_id name")
-        // .exec((err, result) => {
-        //     if (err) {
-        //         res.status(422).json({ error: err })
-        //     } else {
-        //         res.json(result);
-        //     }
-        // })
+        .populate("postedBy", "name _id avatar").then((s) => {
+            res.status(201).json(s)
+        })
+    // .populate("postedBy", "_id name pic ")
+    // .populate("comments.postedBy", "_id name")
+    // .exec((err, result) => {
+    //     if (err) {
+    //         res.status(422).json({ error: err })
+    //     } else {
+    //         res.json(result);
+    //     }
+    // })
 });
 
-router.put('/takebackunivdislike', reqLogin, async(req, res) => {
-   await UnivPost.findByIdAndUpdate(req.body.id, {
+router.put('/takebackunivdislike', reqLogin, async (req, res) => {
+    await UnivPost.findByIdAndUpdate(req.body.id, {
         $pull: {
             dislikes: req.user._id
         }
     }, {
         new: true
     })
-    .populate("postedBy", "name _id avatar").then((s)=>{
-        res.status(201).json(s)
-    })
-        // .populate("postedBy", "_id name pic ")
-        // .populate("comments.postedBy", "_id name")
-        // .exec((err, result) => {
-        //     if (err) {
-        //         res.status(422).json({ error: err })
-        //     } else {
-        //         res.json(result);
-        //     }
-        // })
+        .populate("postedBy", "name _id avatar").then((s) => {
+            res.status(201).json(s)
+        })
+    // .populate("postedBy", "_id name pic ")
+    // .populate("comments.postedBy", "_id name")
+    // .exec((err, result) => {
+    //     if (err) {
+    //         res.status(422).json({ error: err })
+    //     } else {
+    //         res.json(result);
+    //     }
+    // })
 });
 
 
-router.put('/takebackunivlike', reqLogin, async(req, res) => {
-   await UnivPost.findByIdAndUpdate(req.body.id, {
+router.put('/takebackunivlike', reqLogin, async (req, res) => {
+    await UnivPost.findByIdAndUpdate(req.body.id, {
         $pull: {
             likes: req.user._id
         }
     }, {
         new: true
     })
-    .populate("postedBy", "name _id avatar").then((s)=>{
-        res.status(201).json(s)
-    })
-        // .populate("postedBy", "_id name pic ")
-        // .populate("comments.postedBy", "_id name")
-        // .exec((err, result) => {
-        //     if (err) {
-        //         res.status(422).json({ error: err })
-        //     } else {
-        //         res.json(result)
-        //     }
-        // })
+        .populate("postedBy", "name _id avatar").then((s) => {
+            res.status(201).json(s)
+        })
+    // .populate("postedBy", "_id name pic ")
+    // .populate("comments.postedBy", "_id name")
+    // .exec((err, result) => {
+    //     if (err) {
+    //         res.status(422).json({ error: err })
+    //     } else {
+    //         res.json(result)
+    //     }
+    // })
 });
 
-router.put('/univlike', reqLogin, async(req, res) => {
+router.put('/univlike', reqLogin, async (req, res) => {
     await UnivPost.findByIdAndUpdate(req.body.postId, {
         $push: {
             likes: req.user._id
@@ -430,22 +430,22 @@ router.put('/univlike', reqLogin, async(req, res) => {
     }, {
         new: true
     })
-    .populate("postedBy", "name _id avatar").then((s)=>{
-        res.status(201).json(s)
-    })
-        // .populate("postedBy", "_id name pic")
-        // .populate("comments.postedBy", "_id name")
-        // .exec((err, result) => {
-        //     if (err) {
-        //         res.status(422).json({ error: err })
-        //     } else {
-        //         res.json(result)
-        //     }
-        // })
+        .populate("postedBy", "name _id avatar").then((s) => {
+            res.status(201).json(s)
+        })
+    // .populate("postedBy", "_id name pic")
+    // .populate("comments.postedBy", "_id name")
+    // .exec((err, result) => {
+    //     if (err) {
+    //         res.status(422).json({ error: err })
+    //     } else {
+    //         res.json(result)
+    //     }
+    // })
 });
 
 
-router.put('/maincomment', reqLogin, async(req, res) => {
+router.put('/maincomment', reqLogin, async (req, res) => {
 
     // const commentData={
     //     commentedBy:req.user._id,
@@ -460,16 +460,16 @@ router.put('/maincomment', reqLogin, async(req, res) => {
 
 
 
-        console.log("dh");
-        await AllPost.findByIdAndUpdate(req.body.postId, {
-            $push: {
-                comments: comment
-            },
-            hasBeenCommented: true
-        }, {
-            new: true
-        })
-        .populate("postedBy", "name _id avatar").then((sd)=>{
+    console.log("dh");
+    await AllPost.findByIdAndUpdate(req.body.postId, {
+        $push: {
+            comments: comment
+        },
+        hasBeenCommented: true
+    }, {
+        new: true
+    })
+        .populate("postedBy", "name _id avatar").then((sd) => {
             console.log(sd)
             res.status(201).json(sd)
         });
@@ -477,16 +477,16 @@ router.put('/maincomment', reqLogin, async(req, res) => {
     //     text: req.body.text,
     //     commentedBy: req.user
     // }
- 
-        // .populate("postedBy", "_id name photo")
-        // .exec((err, result) => {
-        //     if (err) {
-        //         res.status(422).json({ error: err })
-        //     } else {
-        //         res.json(result)
-        //         console.log(result)
-        //     }
-        // })
+
+    // .populate("postedBy", "_id name photo")
+    // .exec((err, result) => {
+    //     if (err) {
+    //         res.status(422).json({ error: err })
+    //     } else {
+    //         res.json(result)
+    //         console.log(result)
+    //     }
+    // })
 });
 
 
@@ -498,7 +498,7 @@ router.get('/getUnivs', async (req, res) => {
 });
 
 
-router.put('/univcomment', reqLogin, async(req, res) => {
+router.put('/univcomment', reqLogin, async (req, res) => {
 
     const comment = {
         text: req.body.text,
@@ -507,21 +507,21 @@ router.put('/univcomment', reqLogin, async(req, res) => {
 
 
 
-        await UnivPost.findByIdAndUpdate(req.body.postId, {
-            $push: {
-                comments: comment
-            },
-            hasBeenCommented: true
-        }, {
-            new: true
-        })
-        .populate("postedBy", "name _id avatar").then((sd)=>{
+    await UnivPost.findByIdAndUpdate(req.body.postId, {
+        $push: {
+            comments: comment
+        },
+        hasBeenCommented: true
+    }, {
+        new: true
+    })
+        .populate("postedBy", "name _id avatar").then((sd) => {
             res.status(201).json(sd)
         })
 });
 
 
-router.delete('/maindelete/:postId', reqLogin,(req, res) => {
+router.delete('/maindelete/:postId', reqLogin, (req, res) => {
     AllPost.findOne({
         _id: req.params.postId
     })
@@ -600,7 +600,7 @@ router.post('/searchResources', reqLogin, async (req, res) => {
 
 router.get('/resources', reqLogin, (req, res) => {
     Resources.find({ resourceUniversityName: req.user.university })
-    .populate("resourceUploaderName","name")
+        .populate("resourceUploaderName", "name")
         .then(resources => {
             res.json({ resources });
         })
@@ -632,7 +632,7 @@ router.post('/addResources', reqLogin, async (req, res) => {
 
 router.get('/getResources', reqLogin, (req, res) => {
     Resources.find({ resourceUniversityName: req.user.university })
-    .populate("resourceUploaderName","name")
+        .populate("resourceUploaderName", "name")
         .sort("-createdAt")
         .then(Recentresources => {
             res.json({ Recentresources });
@@ -642,8 +642,9 @@ router.get('/getResources', reqLogin, (req, res) => {
 
 router.post('/getSearched', reqLogin, async (req, res) => {
     let resourcePattern = new RegExp("^" + req.body.query)
-    await Resources.find({ resourcesname: { $regex: resourcePattern } })
-    .populate("resourceUploaderName","name")
+    await Resources.find({ $and: [{ resourcesname: { $regex: resourcePattern } },
+         { resourceUniversityName: req.user.university }] })
+        .populate("resourceUploaderName", "name")
         .then(resources => {
             res.json(resources)
             console.log(resources)
@@ -738,9 +739,9 @@ router.get('/topHashtagsUniv', reqLogin, async (req, res) => {
 
 router.post('/getHashtags', reqLogin, async (req, res) => {
     const getHashtagPost = await AllPost.find({ hashtag: req.body.hashtag })
-    .sort('-createdAt')
-    .populate("postedBy","email name university avatar _id")
-    .populate("comments.commentedBy","name email _id avatar")
+        .sort('-createdAt')
+        .populate("postedBy", "email name university avatar _id")
+        .populate("comments.commentedBy", "name email _id avatar")
     if (getHashtagPost) {
         console.log(getHashtagPost);
         res.json(getHashtagPost);
@@ -750,9 +751,9 @@ router.post('/getHashtags', reqLogin, async (req, res) => {
 
 router.post('/getHashtagsPosts', reqLogin, async (req, res) => {
     const getHashtagPost = await UnivPost.find({ $and: [{ hashtag: req.body.hashtag }, { university: req.user.university }] })
-    .sort('-createdAt')
-    .populate("postedBy","email name university avatar _id")
-    .populate("comments.commentedBy","name email _id avatar")
+        .sort('-createdAt')
+        .populate("postedBy", "email name university avatar _id")
+        .populate("comments.commentedBy", "name email _id avatar")
     if (getHashtagPost) {
         console.log(getHashtagPost);
         res.status(201).json(getHashtagPost);
@@ -763,9 +764,9 @@ router.post('/getHashtagsPosts', reqLogin, async (req, res) => {
 router.get('/getUserPost', reqLogin, async (req, res) => {
     // const pd =  await AllPost.find({req.body.us:pos}
     const pd = await AllPost.find({ postedBy: req.user })
-    .sort('-createdAt')
-    .populate("postedBy","email name university avatar _id")
-    .populate("comments.commentedBy","name email _id avatar")
+        .sort('-createdAt')
+        .populate("postedBy", "email name university avatar _id")
+        .populate("comments.commentedBy", "name email _id avatar")
     if (pd) {
         res.status(201).json(pd);
         console.log(pd);
@@ -775,9 +776,9 @@ router.get('/getUserPost', reqLogin, async (req, res) => {
 
 router.get('/getUnivUserPost', reqLogin, async (req, res) => {
     const pd = await UnivPost.find({ postedBy: req.user })
-    .sort('-createdAt')
-    .populate("postedBy","email name university avatar _id")
-    .populate("comments.commentedBy","name email _id avatar")
+        .sort('-createdAt')
+        .populate("postedBy", "email name university avatar _id")
+        .populate("comments.commentedBy", "name email _id avatar")
     if (pd) {
         res.status(201).json(pd);
         console.log(pd);
@@ -786,7 +787,7 @@ router.get('/getUnivUserPost', reqLogin, async (req, res) => {
 
 router.get('/getRecentResources', reqLogin, async (req, res) => {
     const resourceLatest = await Resources.find({ resourceUniversityName: req.user.university })
-    .populate("resourceUploaderName","name")
+        .populate("resourceUploaderName", "name")
         .sort("-createdAt")
         .limit(5)
 
@@ -799,7 +800,7 @@ router.get('/getRecentResources', reqLogin, async (req, res) => {
 router.get('/getRecentPosts', reqLogin, async (req, res) => {
     const recentPosts = await AllPost.find({})
         .sort("-createdAt")
-        .populate("postedBy","email name university avatar _id")
+        .populate("postedBy", "email name university avatar _id")
         .limit(5)
 
     if (recentPosts) {
@@ -811,7 +812,7 @@ router.get('/getRecentPosts', reqLogin, async (req, res) => {
 
 router.get('/getRecentUnivPosts', reqLogin, async (req, res) => {
     const recentPosts = await UnivPost.find({ university: req.user.university })
-    .populate("postedBy","email name university avatar _id")
+        .populate("postedBy", "email name university avatar _id")
         .sort("-createdAt");
 
     if (recentPosts) {
@@ -848,6 +849,15 @@ router.delete('/deletePost/:id', reqLogin, async (req, res) => {
             });
     }
 });
+
+
+
+
+
+
+
+
+
 
 
 router.delete('/deleteAdminPost/:id', reqLogin, async (req, res) => {
@@ -961,9 +971,9 @@ router.get('/getUserDetailsById/:id', reqLogin, async (req, res) => {
 router.get('/getUnivUserPostById/:id', reqLogin, async (req, res) => {
     const getDetails = await User.findById(req.params.id);
     const getPosts = await UnivPost.find({ postedBy: getDetails })
-    .sort('-createdAt')
-    .populate("postedBy","email name university avatar _id")
-    .populate("comments.commentedBy","name email _id avatar")
+        .sort('-createdAt')
+        .populate("postedBy", "email name university avatar _id")
+        .populate("comments.commentedBy", "name email _id avatar")
 
     if (getPosts) {
         res.status(201).json(getPosts);
@@ -975,9 +985,9 @@ router.get('/getUnivUserPostById/:id', reqLogin, async (req, res) => {
 router.get('/getUserPostById/:id', reqLogin, async (req, res) => {
     const getDetails = await User.findById(req.params.id);
     const getPosts = await AllPost.find({ postedBy: getDetails })
-    .sort('-createdAt')
-    .populate("postedBy","email name university avatar _id")
-    .populate("comments.commentedBy","name email _id avatar")
+        .sort('-createdAt')
+        .populate("postedBy", "email name university avatar _id")
+        .populate("comments.commentedBy", "name email _id avatar")
 
     if (getPosts) {
         res.status(201).json(getPosts);
@@ -1043,20 +1053,32 @@ router.get('/getUserPostById/:id', reqLogin, async (req, res) => {
 // });
 
 router.post('/searchuser', async (req, res) => {
-    console.log(req.body);
-    console.log("xd");
-    let userPattern = new RegExp("^" + req.body.query)
-    await User.find({ name: { $regex: userPattern } })
-        .then(user => {
-            res.json({ user });
-            console.log(user);
-        }).catch((e) => {
-            console.log(e)
+    const keyword = req.body.query
+        ? {
+            $or: [
+                { name: { $regex: req.query.search, $options: "i" } },
+                { email: { $regex: req.query.search, $options: "i" } },
+            ],
+        }
+        : {};
+    const user = await User.find(keyword).find({
+        $and: [{ _id: { $ne: req.user._id } },
+        { blockedBy: { $nin: [req.user._id] } }, { blockedUsers: { $nin: [req.user._id] } }]
+    });
+
+    res.status(201).json({ user });
+});
+
+
+router.get('/getBlockedUsers', reqLogin, async (req, res) => {
+    await User.findById(req.user._id).select("blockedUsers")
+        .populate("email avatar name").then((s) => {
+            res.status(201).json(s)
         })
 });
 
-router.post('/deleteUser', async (req, res) => {
-    console.log("qbhvfjef");
+
+router.post('/deleteUser', reqLogin, async (req, res) => {
     const getPost = await User.findOne({ _id: req.body.query });
     console.log(getPost);
 
@@ -1072,47 +1094,117 @@ router.post('/deleteUser', async (req, res) => {
 });
 
 
-
-router.post('/addMessage/:id', reqLogin, async (req, res) => {
-
-    const ifExist = await Messg.find({ $and: { $in: { members: req.user._id }, $in: { members: req.params.id } } });
-
-    if (ifExist) {
-        const { _id } = ifExist;
-        await Messg.findByIdAndUpdate(_id, {
+router.put('/followUser/:id', reqLogin, async (req, res) => {
+    await User.findByIdAndUpdate(req.params.id, {
+        $push: {
+            followers: req.user._id
+        }
+    }, { new: true }).then(async (s) => {
+        await User.findByIdAndUpdate(req.user._id, {
             $push: {
-                message: {
-                    sentBy: req.user._id,
-                    text: req.body.text,
-                    sentAt: req.body.date
-                }
+                following: req.params.id
             }
+        }).then((d) => {
+            res.status(201).json(d)
         })
-    }
-
-    else {
-
-        const addingMessage = await Messg({
-            $push: {
-                members: req.user._id
-            },
-            $push: {
-                members: req.params.id
-            },
-            $push: {
-                message: {
-                    sentBy: req.user._id,
-                    text: req.body.text,
-                    sentAt: req.body.date
-                }
-            }
-        });
-
-        await addingMessage.save().then((p) => {
-            res.status(201).json("Message Sent")
-        })
-    }
+    })
 });
+
+
+router.put('/unfollowUser/:id', reqLogin, async (req, res) => {
+    await User.findByIdAndUpdate(req.params.id, {
+        $pull: {
+            followers: req.user._id
+        }
+    }, { new: true }).then(async (s) => {
+        await User.findByIdAndUpdate(req.user._id, {
+            $pull: {
+                following: req.params.id
+            }
+        }).then((d) => {
+            res.status(201).json(d)
+        })
+    })
+});
+
+router.put('/blockUser/:id', reqLogin, async (req, res) => {
+    await User.findByIdAndUpdate(req.user._id, {
+        $push: {
+            blockedUsers: req.params.id
+        }
+    }).then(async (a) => {
+        await User.findByIdAndUpdate(req.params.id, {
+            $push: {
+                blockedBy: req.user._id
+            }
+        }, { new: true }).then((s) => {
+            console.log(s)
+            res.status(201).json(s)
+        })
+    })
+});
+
+router.put('/unblockUser/:id', reqLogin.apply, async (req, res) => {
+    await User.findByIdAndUpdate(req.user._id, {
+        $pull: {
+            blockedUsers: req.params.id
+        }
+    }).then(async (a) => {
+        await User.findByIdAndUpdate(req.params.id, {
+            $pull: {
+                blockedBy: req.user._id
+            }
+        }).then((s) => {
+            console.log(s)
+            res.status(201).json(s)
+        })
+    });
+});
+
+
+
+
+
+// router.post('/addMessage/:id', reqLogin, async (req, res) => {
+
+//     const ifExist = await Messg.find({ $and: { $in: { members: req.user._id }, $in: { members: req.params.id } } });
+
+//     if (ifExist) {
+//         const { _id } = ifExist;
+//         await Messg.findByIdAndUpdate(_id, {
+//             $push: {
+//                 message: {
+//                     sentBy: req.user._id,
+//                     text: req.body.text,
+//                     sentAt: req.body.date
+//                 }
+//             }
+//         })
+//     }
+
+//     else {
+
+//         const addingMessage = await Messg({
+//             $push: {
+//                 members: req.user._id
+//             },
+//             $push: {
+//                 members: req.params.id
+//             },
+//             $push: {
+//                 message: {
+//                     sentBy: req.user._id,
+//                     text: req.body.text,
+//                     sentAt: req.body.date
+//                 }
+//             }
+//         });
+
+//         await addingMessage.save().then((p) => {
+//             res.status(201).json("Message Sent")
+//         })
+//     }
+// });
 
 // router.get('/getMessage/:id',reqLogin,async(req,res)=>{
 //     try{
@@ -1125,172 +1217,170 @@ router.post('/addMessage/:id', reqLogin, async (req, res) => {
 // }
 // });
 
-router.put('/deleteAllComment',reqLogin,async(req,res)=>{
-    if(req.user.isAdmin){
-    const pst = await AllPost.findByIdAndUpdate(req.body.postId,{
-        $pull:{
-            postComments:req.body.commentId
+router.put('/deleteAllComment', reqLogin, async (req, res) => {
+    if (req.user.isAdmin) {
+        const pst = await AllPost.findByIdAndUpdate(req.body.postId, {
+            $pull: {
+                postComments: req.body.commentId
+            }
+        });
+
+        if (pst) {
+            console.log("Comment Deleted");
         }
-    });
-
-    if(pst){
-        console.log("Comment Deleted");
     }
-}
 });
 
 
-router.put('/deleteUnivComment',reqLogin,async(req,res)=>{
-    if(req.user.isAdmin){
-    const pst = await UnivPost.findByIdAndUpdate(req.body.postId,{
-        $pull:{
-            postComments:req.body.commentId
+router.put('/deleteUnivComment', reqLogin, async (req, res) => {
+    if (req.user.isAdmin) {
+        const pst = await UnivPost.findByIdAndUpdate(req.body.postId, {
+            $pull: {
+                postComments: req.body.commentId
+            }
+        });
+
+        if (pst) {
+            console.log("Comment Deleted");
         }
-    });
-
-    if(pst){
-        console.log("Comment Deleted");
-    }
-}
-});
-
-
-router.get('/getUserChats',reqLogin,async(req,res)=>{
-    const UserChat = await User.findById(req.user._id)
-    .populate("Chats","name avatar");
-    console.log(UserChat);
-    res.status(201).json(UserChat.Chats);
-});
-
-router.post('/addConversation',async(req,res)=>{
-    let senderId = req.body.senderId;
-    let receiverId = req.body.receiverId;
-
-    const exist = await Conversation.findOne({ members: { $all: [receiverId, senderId]  }})
-    
-    if(exist) {
-        res.status(200).json('conversation already exists');
-        return;
-    }
-    const newConversation = new Conversation({
-        members: [senderId, receiverId]
-    });
-
-    try {
-        const savedConversation = await newConversation.save();
-        res.status(200).json(savedConversation);
-    } catch (error) {
-        res.status(500).json(error);
-    }
-
-});
-
-
-router.post('/getConversation',async(req,res)=>{
-    try {
-        // console.log(req.body);
-        const conversation = await Conversation.findOne({ members: { $all: [ req.body.sender, req.body.receiver] }});
-        console.log(conversation);
-        res.status(200).json(conversation);
-    } catch (error) {
-        res.status(500).json(error);
     }
 });
 
 
-router.post('/addMessage',async(req,res)=>{
-    const newMessage = new Message(req.body);
-    console.log(req.body, newMessage)
-    try {
-        await newMessage.save();
-        await Conversation.findByIdAndUpdate(req.body.conversationId, { message: req.body.text });
-        res.status(200).json("Message has been sent successfully");
-    } catch (error) {
-        res.status(500).json(error);
-    }
-});
+// router.get('/getUserChats',reqLogin,async(req,res)=>{
+//     const UserChat = await User.findById(req.user._id)
+//     .populate("Chats","name avatar");
+//     console.log(UserChat);
+//     res.status(201).json(UserChat.Chats);
+// });
+
+// router.post('/addConversation',async(req,res)=>{
+//     let senderId = req.body.senderId;
+//     let receiverId = req.body.receiverId;
+
+//     const exist = await Conversation.findOne({ members: { $all: [receiverId, senderId]  }})
+
+//     if(exist) {
+//         res.status(200).json('conversation already exists');
+//         return;
+//     }
+//     const newConversation = new Conversation({
+//         members: [senderId, receiverId]
+//     });
+
+//     try {
+//         const savedConversation = await newConversation.save();
+//         res.status(200).json(savedConversation);
+//     } catch (error) {
+//         res.status(500).json(error);
+//     }
+
+// });
 
 
-router.get('/getMessage/:id',async(req,res)=>{
-    try {
-        console.log(req.params.id)
-        const messages = await Message.find({ conversationId: req.params.id });
-        res.status(200).json(messages);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+// router.post('/getConversation',async(req,res)=>{
+//     try {
+//         // console.log(req.body);
+//         const conversation = await Conversation.findOne({ members: { $all: [ req.body.sender, req.body.receiver] }});
+//         console.log(conversation);
+//         res.status(200).json(conversation);
+//     } catch (error) {
+//         res.status(500).json(error);
+//     }
+// });
 
-});
+
+// router.post('/addMessage',async(req,res)=>{
+//     const newMessage = new Message(req.body);
+//     console.log(req.body, newMessage)
+//     try {
+//         await newMessage.save();
+//         await Conversation.findByIdAndUpdate(req.body.conversationId, { message: req.body.text });
+//         res.status(200).json("Message has been sent successfully");
+//     } catch (error) {
+//         res.status(500).json(error);
+//     }
+// });
+
+
+// router.get('/getMessage/:id',async(req,res)=>{
+//     try {
+//         console.log(req.params.id)
+//         const messages = await Message.find({ conversationId: req.params.id });
+//         res.status(200).json(messages);
+//     } catch (error) {
+//         res.status(500).json(error);
+//     }
+
+// });
 
 
 
-router.get('/getUsers',async(req,res)=>{
+router.get('/getUsers', async (req, res) => {
     const users = await User.find({});
     res.status(201).json(users)
 });
 
 
-router.post('/forgotPassword',async(req,res)=>{
-    const {email} = req.body;
-    try{
-        const user = await User.findOne({email});
+router.post('/forgotPassword', async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await User.findOne({ email });
         console.log(user);
-        if(user){
+        if (user) {
             // const resetToken = user.createResetToken();
             const t = crypto.randomBytes(32).toString('hex');
-            await Token({token:t,email:email}).save();
+            await Token({ token: t, email: email }).save();
 
             const passwordLink = `${req.protocol}://${req.get('host')}/resetPassword/${t}`;
             trans.sendMail({
-                from:"Email",
-                to:email,
-                subject:"Reset Password|College Dost",
-                text:`Click This Link To Reset Password : <a href=${passwordLink}>Reset Password</a>`,
-                html:`<h3>
+                from: "Email",
+                to: email,
+                subject: "Reset Password|College Dost",
+                text: `Click This Link To Reset Password : <a href=${passwordLink}>Reset Password</a>`,
+                html: `<h3>
                 Click This Link To Reset Password : <a href=${passwordLink}>Reset Password</a>
                 </h3>`
-            }).then((s)=>{
+            }).then((s) => {
                 res.status(201).json(s)
             })
         }
-    }catch(e){
+    } catch (e) {
         res.status(401).json("Error")
     }
 });
 
 
-router.post('/resetPassword/:token',async(req,res)=>{
+router.post('/resetPassword/:token', async (req, res) => {
     const token = req.params.token;
     console.log(token)
-    const {password}=req.body;
+    const { password } = req.body;
     console.log(req.body)
-    const t = await Token.findOne({token});
+    const t = await Token.findOne({ token });
     console.log(t);
-    if(t){
+    if (t) {
         console.log("T");
-        const user = await User.findOneAndUpdate({email:t.email},{
-            password:password
+        const user = await User.findOneAndUpdate({ email: t.email }, {
+            password: password
         });
-        await Token.findOneAndDelete({token})
-    // await user.resetPasswordHandler(password);
-    // await user.save();
-    res.status(201).json({
-        message:"Password Changed Successfully"
-    })
-}
+        await Token.findOneAndDelete({ token })
+        res.status(201).json({
+            message: "Password Changed Successfully"
+        })
+    }
 });
 
 
-router.get('/user/verifyEmail',async(req,res)=>{
+router.get('/user/verifyEmail', async (req, res) => {
     const token = req.query.token;
     // console.log(token)
-    var check = await Token.findOne({token});
+    var check = await Token.findOne({ token });
     console.log(check)
-    if(check){
-        const user = await User.findOneAndUpdate({email:check.email},{
-            confirmed:true
+    if (check) {
+        const user = await User.findOneAndUpdate({ email: check.email }, {
+            confirmed: true
         });
-        await Token.findOneAndDelete({token})
+        await Token.findOneAndDelete({ token })
         console.log(user)
         res.status(201).json("Email Verified Successfully");
     }
