@@ -6,44 +6,31 @@ import "./Profile.css";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useContext } from "react";
-import { LoginContext } from "../../ContextProvider/ContextProvider";
+import { AuthContext, LoginContext } from "../../ContextProvider/ContextProvider";
 import axios from "axios";
 import Footer from "./Footer";
 import { Helmet } from "react-helmet";
 import CollegeQuestion from "./CollegeQuestion";
 import { API } from "./API";
-export default function Profile() {
-  // const { account, setAccount } = useContext(LoginContext);
-  const [user, setUser] = useState([]);
-  const [posts, setUserPosts] = useState([]);
-  const [univ, setUniv] = useState([]);
-  const getUserposts = async () => {
-    const pi = await axios.get(`${API}/getUserPost`, {
-      headers: {
-        Authorization: "CollegeDost " + localStorage.getItem("jwt"),
-      },
-    });
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserposts, getUserUnivposts } from "../../actions/postAction";
 
-    if (pi.status === 201) {
-      setUserPosts(pi.data);
-      console.log(pi.data);
-    }
 
-    const pis = await axios.get(`${API}/getUnivUserPost`, {
-      headers: {
-        Authorization: "CollegeDost " + localStorage.getItem("jwt"),
-      },
-    });
-    console.log("user");
-    if (pis.status === 201) {
-      setUniv(pis.data);
-      console.log("univ : " + pis.data);
-    }
-  };
+const Profile = () => {
+
+  const { user } = useContext(AuthContext);
+
+  const {posts} = useSelector((state) => state.getUserAllPostsReducer);
+  const { univposts } = useSelector((state) => state.getUserUnivPostsReducer);
+  
+  const dispatch = useDispatch();
+
+  
   useEffect(() => {
-    getUserposts();
-    setUser(JSON.parse(localStorage.getItem("user")));
-  }, []);
+    dispatch(getUserposts());
+    dispatch(getUserUnivposts());
+  }, [dispatch]);
   var HasPosted = false;
   return (
     <div className="profile">
@@ -71,7 +58,7 @@ export default function Profile() {
           <div>{user.name}</div>
           <div>{user.email}</div>
           <div>{user.university}</div>
-          <div> Posts : {posts.length + univ.length}</div>
+          <div> Posts : {posts.length + univposts.length}</div>
           <button className="edits">Edit Profile</button>
         </div>
 
@@ -87,14 +74,18 @@ export default function Profile() {
                   hasbeenCommented={p.hasBeenCommented}
                   comments={p.comments.map((x) => (
                     <div>
-                      <p
-                        style={{
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {x.commentedBy.name}
-                      </p>
-                      <p>{x.text}</p>
+                  <Link to={`/user?${x?.commentedBy?._id}`} style={{
+                     textDecoration:"none"
+                  }}>
+                  <p
+                    style={{
+                        fontWeight: "bold",
+                        textDecoration:"none"
+                    }}
+                  >
+                    {x.commentedBy.name}
+                    </p>
+                    </Link>
                     </div>
                   ))}
                   id={p._id}
@@ -104,19 +95,23 @@ export default function Profile() {
                 />
               ))}
 
-              {univ.map((p) => (
+              {univposts.map((p) => (
                 <CollegeQuestion
                   description={p.body}
                   comments={p.comments.map((x) => (
                     <div>
-                      <p
-                        style={{
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {x.commentedBy.name}
-                      </p>
-                      <p>{x.text}</p>
+                      <Link to={`/user?${x?.commentedBy?._id}`} style={{
+                     textDecoration:"none"
+                  }}>
+                  <p
+                    style={{
+                        fontWeight: "bold",
+                        textDecoration:"none"
+                    }}
+                  >
+                    {x.commentedBy.name}
+                    </p>
+                    </Link>
                     </div>
                   ))}
                   hasBeenCommented={p.hasBeenCommented}
@@ -130,9 +125,11 @@ export default function Profile() {
             </div>
           )}
         </div>
-        {/* <div className="ad101">AD bolte</div> */}
       </div>
       <Footer />
     </div>
   );
 }
+
+
+export default Profile;

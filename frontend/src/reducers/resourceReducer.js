@@ -3,17 +3,17 @@ export const getResourcesReducer = (state={resources:[]},action)=>{
         case 'GET_UNIV_RESOURCES_REQ':
             return {
                 ...state,
-                loading:true
+                loadingresource:true
             }
         case 'GET_UNIV_RESOURCES_SUCCESS':
             return {
                 resources:action.payload,
-                loading:false
+                loadingresource:false
             }
         case 'GET_UNIV_RESOURCES_FAIL':
             return {
-                error:action.payload,
-                loading:false
+                errorresource:action.payload,
+                loadingresource:false
             }   
         default: return state     
     }
@@ -37,5 +37,27 @@ export const addResourcesReducer = (state={},action) =>{
             }
         default:
             return state;
+    }
+}
+
+export const getRecentResourcesReducer = (state={recentResources:[]},action)=>{
+    switch(action.type){
+        case 'GET_RECENT_UNIV_RESOURCES_REQ':
+            return {
+                ...state,
+                loading:true
+            }
+        case 'GET_RECENT_UNIV_RESOURCES_SUCCESS':
+            return {
+                loading:false,
+                recentResources:action.payload
+            }   
+        case 'GET_RECENT_UNIV_RESOURCES_FAIL':
+            return {
+                loading:false,
+                error:action.payload
+            }     
+        default:
+            return state;    
     }
 }

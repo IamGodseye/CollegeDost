@@ -7,19 +7,18 @@ import axios from "axios";
 import { API } from "./API";
 import { Snackbar } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
-
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import { useDispatch } from "react-redux";
+import { getAllPosts } from "../../actions/postAction";
+import { getCollegePosts } from "../../actions/collegePostAction";
 
 const AnswerModal = (props) => {
-
 
   const [showModal, setShowModal] = useState(false);
   const [open, setOpen] = useState(false);
   const [opend, setOpend] = useState(false);
   const [current, setCurrent] = useState([]);
+
+  const dispatch = useDispatch();
 
   const handleClick = () => {
     setOpen(true);
@@ -29,7 +28,6 @@ const AnswerModal = (props) => {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
   };
 
@@ -52,7 +50,6 @@ const AnswerModal = (props) => {
   useEffect(() => {
     setCurrent();
     setCurrent(JSON.parse(localStorage.getItem("user")));
-    // console.log(JSON.parse(current).isAdmin);
   }, []);
   const addComment = async () => {
     handleClickd();
@@ -64,14 +61,15 @@ const AnswerModal = (props) => {
       },
       {
         headers: {
-          Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+          Authorization:localStorage.getItem("jwt"),
         },
       }
     );
 
     if (comment) {
+      dispatch(getAllPosts());
       handleClick();
-      window.location.reload()
+      // window.location.reload()
       props.setText("");
       setShowModal(false);
     }
@@ -87,30 +85,20 @@ const AnswerModal = (props) => {
       },
       {
         headers: {
-          Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+          Authorization:localStorage.getItem("jwt"),
         },
       }
     );
 
     if (comment) {
-
+      dispatch(getCollegePosts());
       handleClick();
-      window.location.reload()
+      // window.location.reload()
       props.setText("");
       setShowModal(false);
     }
   };
-  // this.handleOpenModal = this.handleOpenModal.bind(this);
-  // this.handleCloseModal = this.handleCloseModal.bind(this);
-  // handleOpenModal() {
-  //   this.setState({ showModal: true });
-  // }
-  // handleCloseModal() {
-  //   this.setState({ showModal: false });
-  // }
-  // handleText(s){
-  //   this.setState({text:s})
-  // }
+
 
   return (
     <div>
@@ -122,22 +110,7 @@ const AnswerModal = (props) => {
         />
       </button>
 
-      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="info">
-            Comment Added
-          </Alert>
-        </Snackbar>
-
-        <Snackbar open={opend} autoHideDuration={3000} onClose={handleClosed}>
-          <Alert onClose={handleClosed} severity="info">
-            Adding Comment
-          </Alert>
-        </Snackbar>
-
-
       <ReactModal
-        style={{
-        }}
         className="Modal"
         overlayClassName="Overlay"
         isOpen={showModal}

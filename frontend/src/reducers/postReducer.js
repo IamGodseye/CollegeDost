@@ -40,22 +40,22 @@ export const AddallPostReducer = (state={posts:[]},action)=>{
     }
 }
 
-export const getRecentAllPostsReducer = (state={posts:[]},action)=>{
+export const getRecentAllPostsReducer = (state={recentposts:[]},action)=>{
     switch(action.type){
         case 'GET_RECENTPOST_ALL_REQ':
             return {
                 ...state,
-                loading:true
+                loadingrecent:true
             }
         case 'GET_RECENTPOST_ALL_SUCCESS':
             return {
-                posts:action.payload,
-                loading:false
+                recentposts:action.payload,
+                loadingrecent:false
             }
         case 'GET_RECENTPOST_ALL_FAIL':
             return {
-                error:action.payload,
-                loading:false
+                errorrecent:action.payload,
+                loadingrecent:false
             }   
         default: return state     
     }

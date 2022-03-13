@@ -23,7 +23,7 @@ export default function SearchResources() {
       },
       {
         headers: {
-          Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+          Authorization:localStorage.getItem("jwt"),
         },
       }
     );

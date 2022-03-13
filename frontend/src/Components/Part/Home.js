@@ -1,6 +1,6 @@
 import "./Home.css";
 import "bootstrap/dist/css/bootstrap.css";
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import land from "./DrawKit-daily-life-vector-illustrations/PNG/1.png";
 import Question from "./Que";
 import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
@@ -20,40 +20,18 @@ import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import "bootstrap/dist/js/bootstrap.js";
 import { API } from "./API";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllHashtags } from "../../actions/hashTagAction";
 
 const Home = (props) => {
-  const [isHashtag, setHashtag] = useState(false);
-  const [hashTag, setHashTag] = useState([]);
-  const location = useLocation();
-  // const getHashTagPosts = async(e)=>{
-  //   console.log(e.target.text);
-  //   const ps = await axios.post('http://localhost:7000/getHashtags',{
-  //     hashtag:e.target.text.toString()
-  //   },{
-  //     headers:{
-  //       "Authorization": "CollegeDost " + localStorage.getItem("jwt"),
-  //     }
-  //   });
 
-  //   console.log(ps);
-
-  // setHashTagPosts(ps.data);
-  // }
-
-  const getLastestHashtags = async (e) => {
-    const d = await axios.get(`${API}/topHashtags`, {
-      headers: {
-        Authorization: "CollegeDost " + localStorage.getItem("jwt"),
-      },
-    });
-    if (d.status === 201) {
-      setHashTag(d.data);
-    }
-  }
+  const dispatch = useDispatch();
+  const hashtagSelector = useSelector((state) => state.getAllHashtagsReducer);
+  const { hashTags, loadingAllHashtags, errorAllHashtags } = hashtagSelector;
 
   useEffect(() => {
-    getLastestHashtags();
-  }, [hashTag]);
+    dispatch(getAllHashtags());
+  }, [dispatch]);
 
   return (
     <div className="home">
@@ -78,7 +56,31 @@ const Home = (props) => {
       </div>
 
       <div className="sec-nav">
-        {hashTag.map((h) => (
+        {/* {
+          loadingAllHashtags && (
+            <div
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                marginLeft: "10%",
+              }}
+            >
+              <span
+                className="spinner-border spinner-border-lm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </div>
+          )
+        } */}
+        {
+          errorAllHashtags && (
+            <div>
+              Something Went Wrong
+            </div>
+          )
+        }
+        {hashTags.map((h) => (
           <div class="secnav-items one1">
             <Link to={`/hashtag/?${h.hashTagtext.replace("#", "")}`}>
               {h.hashTagtext}
@@ -86,9 +88,6 @@ const Home = (props) => {
           </div>
         ))}
         <div className="secnav-items add-Question">
-          {/* <button className="btn btn-outline-success">
-            <b>+</b>
-          </button> */}
         </div>
       </div>
       <Content />

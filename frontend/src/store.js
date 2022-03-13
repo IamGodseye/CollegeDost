@@ -5,8 +5,9 @@ import { AddallPostReducer, getallPostReducer, getRecentAllPostsReducer } from '
 import { addCollegePostReducer, getCollegePostReducer, getRecentCollegePostsReducer } from './reducers/collegePostReducer';
 import { addAllPostCommentReducer, addUnivCommentReducer } from './reducers/commentReducer';
 import { likeAllPostReducer, likeUnivPostReducer } from './reducers/likeReducer';
-import { addResourcesReducer, getResourcesReducer } from './reducers/resourceReducer';
+import { addResourcesReducer, getRecentResourcesReducer, getResourcesReducer } from './reducers/resourceReducer';
 import { getAllHashtagsReducer, getCollegeHashTagsReducer } from './reducers/hashTagReducer';
+import { getUserAllPostsReducer, getUserUnivPostsReducer } from './reducers/userPostReducer';
 
 const rootReducer = combineReducers({
     getallPostReducer:getallPostReducer,
@@ -22,7 +23,10 @@ const rootReducer = combineReducers({
     getRecentCollegePostsReducer:getRecentCollegePostsReducer,
     getAllHashtagsReducer:getAllHashtagsReducer,
     getCollegeHashTagsReducer:getCollegeHashTagsReducer,
-    getRecentAllPostsReducer:getRecentAllPostsReducer
+    getRecentAllPostsReducer:getRecentAllPostsReducer,
+    getRecentResourcesReducer: getRecentResourcesReducer,
+    getUserAllPostsReducer: getUserAllPostsReducer,
+    getUserUnivPostsReducer:getUserUnivPostsReducer
 });
 
 const initialState = {};

@@ -3,6 +3,9 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@chakra-ui/react": "^1.8.6",
+        "@emotion/react": "^11.8.2",
+        "@emotion/styled": "^11.8.1",
         "@material-ui/core": "^4.12.3",
         "@material-ui/icons": "^4.11.2",
         "@material-ui/lab": "^4.0.0-alpha.60",
@@ -13,6 +16,7 @@
         "ant-design": "^1.0.0",
         "axios": "^0.21.1",
         "bootstrap": "^5.1.1",
+        "framer-motion": "^4.1.17",
         "gh-pages": "^3.2.3",
         "material-ui": "^0.20.2",
         "react": "^17.0.2",

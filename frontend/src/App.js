@@ -20,6 +20,7 @@ import AccountProvider from "./ContextProvider/AccountProvider";
 import { CircularProgress } from "@material-ui/core";
 import ForgetPassword from "./Components/Part/ForgetPassword";
 import VerifyLink from "./Components/Part/VerifyLink";
+import ResetPassword from "./Components/Part/ResetPassword";
 // import Messenger from "./Components/Messenger";
 const Messenger = lazy(() => import('./Components/Part/Messenger/ChatDialog'));
 function App() {
@@ -33,12 +34,13 @@ function App() {
               <Route exact path="/">
                 {user ? <Home /> : <Signup />}
               </Route>
-              <Route exact path="/messenger">
+
+              {/* <Route exact path="/messenger">
                 <Suspense fallback={<CircularProgress />}>
                   <Messenger />
                 </Suspense>
-              </Route>
-
+              </Route> */}
+              
               <Route exact path="/Login">
               { user ? <Redirect to="/home"/> : <Login />}
               </Route>
@@ -79,16 +81,24 @@ function App() {
                 <ForgetPassword />
               </Route>
 
-              <Route exact path="/verifyLink">
-                <VerifyLink />
-              </Route>
-
               <Route exact path="/searchUser">
                 <SearchUser />
               </Route>
 
               <Route exact path="/user">
                 <UserProfile />
+              </Route>
+
+                <Route exact path="/forgetPassword">
+                <ForgetPassword />
+              </Route>
+
+               <Route exact path="/resetPassword/:token">
+                <ResetPassword />
+              </Route>
+
+              <Route exact path="/verify">
+                <VerifyLink />
               </Route>
 
             </Switch>

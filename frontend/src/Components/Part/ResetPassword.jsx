@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "./Signup.css";
@@ -9,39 +9,54 @@ import { LoginContext } from "../../ContextProvider/ContextProvider";
 import { AccountContext } from "../../ContextProvider/AccountProvider";
 import "react-circular-progressbar/dist/styles.css";
 import { Helmet } from "react-helmet";
+import { useToast } from '@chakra-ui/react';
 import ChangingProgressProvider from "./ChangingProgress";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { API } from "./API";
 
 
 
-const ForgotPassword = (props) => {
+const ResetPassword = (props) => {
+
     const { account, setAccount, showloginButton, setShowloginButton, showlogoutButton, setShowlogoutButton } = useContext(AccountContext);
     const [isActive, setActive] = useState("false");
     const [message, setMessage] = useState("");
-    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmpassword, setConfirmPassword] = useState("");
     const history = useHistory();
-    const handleToggle = () => {
-        setActive(!isActive);
-    };
+    const toast = useToast();
 
+    const { token } = useParams();
+    console.log(token);
 
-    const sendLink = async (e) => {
+    const resetPassword = async (e) => {
         e.preventDefault();
-        const pass = await axios.post(`${API}/forgotPassword`, {
-            email
-        });
-        if (pass.data.success) {
-            setMessage("You have been sent an verification link to change your password,Please do check in your spam folder too");
-        }else if(!pass.data.success){
-            setMessage("Any User With This Email Address Doesnot Exist")
+        if (token) {
+            const pass = await axios.post(`http://localhost:4000/resetPassword/${token}`, {
+                password,
+                confirmpassword
+            });
+            if (pass.data.success) {
+                toast({
+                    title: "Success",
+                    description: "Password Changed,Please Login Again",
+                    status: "success"
+                });
+                history.push("/");
+            } else if (!pass.data.success) {
+                 toast({
+                    title: "Failed",
+                    description: "Invalid or Expire Token",
+                    status: "error"
+                });
+            }
         }
     }
 
     return (
         <div className="login signup">
             <Helmet>
-                <title>Forgot Password</title>
+                <title>Reset Password</title>
             </Helmet>
             <div className={isActive ? "light" : null}>
                 <div className="wrapper-header">
@@ -59,33 +74,43 @@ const ForgotPassword = (props) => {
                         <div className="btn-choice change1 change2">
                             <button className="signup_btn">
                                 <span>
-                                    <h3>Forgot Password</h3>
+                                    <h3>Reset Password</h3>
                                 </span>
                             </button>
                         </div>
                     </Link>
-                    <label htmlFor="email">Email:</label>
+                    <label htmlFor="email">Password:</label>
                     <input
                         id="username"
                         type="text"
                         name="email"
                         autoComplete="off"
-                        placeholder="Enter email"
-                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Enter New Password"
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+
+                   <label htmlFor="email">Confirm Password:</label>
+                    <input
+                        id="username"
+                        type="text"
+                        name="email"
+                        autoComplete="off"
+                        placeholder="Enter Confirm Password"
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                     <p
                         style={{
-                            color: "red",
+                            color: "green",
                         }}
                     >
                         {message}
                     </p>
-                    <button id="submit" onClick={sendLink}>
+                    <button id="submit" onClick={resetPassword}>
                        Submit
                     </button>
                 </form>
             </div>
         </div>
     );
-};
-export default ForgotPassword;
+}
+export default ResetPassword;

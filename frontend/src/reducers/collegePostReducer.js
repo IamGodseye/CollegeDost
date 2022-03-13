@@ -1,4 +1,4 @@
-export const getCollegePostReducer = (state = { posts: [] }, action) => {
+export const getCollegePostReducer = (state = { collegeposts: [] }, action) => {
     switch (action.type) {
         case 'GET_CLG_POST_REQ':
             return {
@@ -7,7 +7,7 @@ export const getCollegePostReducer = (state = { posts: [] }, action) => {
             }
         case 'GET_CLG_POST_SUCCESS':
             return {
-                posts: action.payload,
+                collegeposts: action.payload,
                 loading: false
             }
         case 'GET_CLG_POST_FAIL':
@@ -41,7 +41,7 @@ export const addCollegePostReducer = (state = {}, action) => {
 }
 
 
-export const getRecentCollegePostsReducer = (state = { posts: []},action) => {
+export const getRecentCollegePostsReducer = (state = { recentcollegeposts: []},action) => {
     switch (action.type) {
         case 'GET_RECENTPOST_CLG_REQ':
             return {
@@ -50,7 +50,7 @@ export const getRecentCollegePostsReducer = (state = { posts: []},action) => {
             }
         case 'GET_RECENTPOST_CLG_SUCCESS':
             return {
-                posts:action.payload,
+                recentcollegeposts:action.payload,
                 loading:false
             }
         case 'GET_RECENTPOST_CLG_FAIL':

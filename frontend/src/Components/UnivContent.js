@@ -10,60 +10,32 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import CollegeQuestion from "./Part/CollegeQuestion";
 import { API } from "./Part/API";
+import { useDispatch, useSelector } from "react-redux";
+import { getCollegePosts, getRecentCollegePosts } from "../actions/collegePostAction";
+import { getRecentResources } from "../actions/resourceAction";
 
 export default function UnivContent() {
-  const [posts, setPosts] = useState([]);
-  const [recentResources, setRecentResources] = useState([]);
-  const [recentPosts, setRecentPosts] = useState([]);
 
-  const getRecentPosts = async () => {
-    const recentPosts = await axios.get(
-      `${API}/getRecentUnivPosts`,
-      {
-        headers: {
-          Authorization: "CollegeDost " + localStorage.getItem("jwt"),
-        },
-      }
-    );
-    if (recentPosts.status === 201) {
-      setRecentPosts(recentPosts.data);
-    }
+  const dispatch = useDispatch();
 
-    const univposts = await axios.get(
-      `${API}/universityPosts`,
-      {
-        headers: {
-          Authorization: "CollegeDost " + localStorage.getItem("jwt"),
-        },
-      }
-    );
-    setPosts(univposts.data.post);
-    console.log(univposts.data.post);
+  const {collegeposts,loading,error} = useSelector((state) => state.getCollegePostReducer);
+  const {recentcollegeposts} = useSelector((state) => state.getRecentCollegePostsReducer);
+  const {recentResources} = useSelector((state)=>state.getRecentResourcesReducer);
 
-    const getRecentResources = await axios.get(
-      `${API}/getRecentResources`,
-      {
-        headers: {
-          Authorization: "CollegeDost " + localStorage.getItem("jwt"),
-        },
-      }
-    );
-    setRecentResources(getRecentResources.data);
-    if (getRecentResources) {
-    }
-  };
-
-  useEffect(() => {
-    getRecentPosts();
-  });
+  useEffect(()=>{
+    dispatch(getCollegePosts());
+    dispatch(getRecentCollegePosts());
+    dispatch(getRecentResources());
+  },[dispatch])
 
   return (
     <div className="content">
       <div className="sidebar">
         <hr />
         <h1> Recently Asked Questions</h1>
-        {recentPosts.length > 0 ? (
-          recentPosts.map((i, index) => (
+        {
+          recentcollegeposts.length > 0 ? (
+          recentcollegeposts.map((i, index) => (
             <div>
               <hr />
               <Link
@@ -104,26 +76,29 @@ export default function UnivContent() {
       </div>
       <div className="feed">
         <Editor university={true} />,
-        {posts.length > 0 ? (
-          posts.map((p) => (
+        {collegeposts.length > 0 ? (
+          collegeposts.map((p) => (
             <CollegeQuestion
               description={p.body}
               comments={p.comments.map((x) => (
                 <div>
+                   <Link to={`/user?${x?.commentedBy?._id}`} style={{
+                     textDecoration:"none"
+                  }}>
                   <p
                     style={{
-                      fontWeight: "bold",
+                        fontWeight: "bold",
+                        textDecoration:"none"
                     }}
                   >
                     {x.commentedBy.name}
-                  </p>
+                    </p>
+                    </Link>
                   <p>{x.text}</p>
                 </div>
               ))}
               hasBeenCommented={p.hasBeenCommented}
               id={p._id}
-              setPosts={setPosts}
-              posts={posts}
               likes={p.likes}
               dislikes={p.dislikes}
               postedBy={p.postedBy}
@@ -138,11 +113,6 @@ export default function UnivContent() {
               marginLeft: "40%",
             }}
           >
-            {/* <span
-              className="spinner-border spinner-border-lm"
-              role="status"
-              aria-hidden="true"
-            ></span> */}
             No Questions
           </div>
         )}
@@ -151,7 +121,7 @@ export default function UnivContent() {
         <hr />
         <h1 className="mx-auto">Recently Added Resources</h1>
 
-        {recentResources.length > 0 ? (
+        {recentResources.length > 0  ? (
           recentResources.map((r) => (
             <div className="resource_univs res_card">
               <p className="res-uploader-name">
@@ -163,21 +133,9 @@ export default function UnivContent() {
               </a>
             </div>
           ))
-        ) : (
-          <div
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              marginLeft: "10%",
-            }}
-          >
-            <span
-              className="spinner-border spinner-border-lm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-          </div>
-        )}
+        ): <div className="resource_univs res_card">
+           No Resources Available Currently
+          </div>}
         <hr />
       </div>
     </div>

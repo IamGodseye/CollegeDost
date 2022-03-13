@@ -8,12 +8,13 @@ import { useState } from "react";
 import { useContext } from "react";
 import { LoginContext } from "../../ContextProvider/ContextProvider";
 import axios from 'axios';
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Footer from "./Footer";
 import { API } from "./API";
-const  UserProfile=() =>{
-    // const {account,setAccount} = useContext(LoginContext);
+
+const UserProfile = () => {
+
     const{search}=useLocation();
     console.log(search);
     const id = search.replace("?","");
@@ -23,7 +24,7 @@ const  UserProfile=() =>{
     const getUserposts=async()=>{
         const pi = await axios.get(`${API}/getUserPostById/${id}`,{
             headers:{
-                "Authorization": "CollegeDost " + localStorage.getItem("jwt"),
+                "Authorization": localStorage.getItem("jwt"),
             }
         });
         
@@ -34,7 +35,7 @@ const  UserProfile=() =>{
 
         const pis = await axios.get(`${API}/getUnivUserPostById/${id}`,{
           headers:{
-            "Authorization": "CollegeDost " + localStorage.getItem("jwt"),
+            "Authorization": localStorage.getItem("jwt"),
           }
         });
     
@@ -42,33 +43,29 @@ const  UserProfile=() =>{
           setUniv(pis.data);
           console.log(pis.data);
         }
-
-
         const u = await axios.get(`${API}/getUserDetailsById/${id}`,{
           headers:{
-              "Authorization": "CollegeDost " + localStorage.getItem("jwt"),
+              "Authorization":localStorage.getItem("jwt"),
             }
         });
         if(u.status===201){
             setUser(u.data);
             console.log(u.data);
         }
-
-
   }
 
-
-
-  
-  useEffect(()=>{
+  useEffect(() => {
     getUserposts();
-  },[])
+  }, []);
+
   var HasPosted = false;
   return (
     <div className="profile">
-       <Helmet>
-<title>{user.name}</title>
-</Helmet>
+      
+      <Helmet>
+      <title>{user.name}</title>
+      </Helmet>
+
       <Header />
       <div className="profile_pg">
         <div className="profile_sidebar">
@@ -125,10 +122,18 @@ const  UserProfile=() =>{
             hasbeenCommented={p.hasBeenCommented}
             comments={p.comments.map((x)=>(
               <div>
-              <p style={{
-                fontWeight:"bold"
-              }}>{x.commentedBy.name}</p>
-              <p>{x.text}</p>
+              <Link to={`/user?${x?.commentedBy?._id}`} style={{
+                     textDecoration:"none"
+                  }}>
+                  <p
+                    style={{
+                        fontWeight: "bold",
+                        textDecoration:"none"
+                    }}
+                  >
+                    {x.commentedBy.name}aaa
+                    </p>
+                    </Link>
               </div>
             ))}
             id={p._id}

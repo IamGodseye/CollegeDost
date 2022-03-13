@@ -9,7 +9,7 @@ export default function AdminPost(props) {
   const deletePost = async(id)=>{
     const dp = await axios.delete(`${API}/deleteAdminUnivPost/${id}`,{
       headers:{
-        Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+        Authorization:localStorage.getItem("jwt"),
       }
     });
 
@@ -25,7 +25,7 @@ export default function AdminPost(props) {
   const deletePostMain = async(id)=>{
     const dp = await axios.delete(`${API}/deleteAdminPost/${id}`,{
       headers:{
-        Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+        Authorization: localStorage.getItem("jwt"),
       }
     });
 

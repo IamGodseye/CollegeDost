@@ -6,11 +6,15 @@ import "./styles.css";
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
 import axios from "axios";
 import {API} from './API';
+import { useDispatch } from "react-redux";
+import { getAllPosts } from "../../actions/postAction";
+import { getCollegePosts } from "../../actions/collegePostAction";
 
 export const Editor = (props) => {
   const[caption,setCaption]=useState("");
   const[shareImage,setShareImage] =  useState("");
-  const[pic,setPic]= useState("");
+  const [pic, setPic] = useState("");
+  const dispatch = useDispatch();
   const postQuestion = async (e) => {
     e.preventDefault();
     let urlToPost = "";
@@ -26,10 +30,12 @@ export const Editor = (props) => {
       },
           {
             headers: {
-              Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+              Authorization: localStorage.getItem("jwt"),
             },
           }
-        ).then((e)=>{
+      ).then((e) => {
+        dispatch(getCollegePosts());
+        dispatch(getAllPosts());
           if(e){
             setShareImage("");
             setPic("");
@@ -45,10 +51,12 @@ export const Editor = (props) => {
           },
           {
             headers: {
-              Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+              Authorization:localStorage.getItem("jwt"),
             },
           }
-        ).then((e)=>{
+      ).then((e) => {
+          dispatch(getCollegePosts());
+          dispatch(getAllPosts());
           if(e){
             setShareImage("");
             setPic("");

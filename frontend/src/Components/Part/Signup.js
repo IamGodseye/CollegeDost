@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Signup.css";
 import axios from "axios";
+import { useToast } from '@chakra-ui/react';
 import { Link } from "react-router-dom";
 import a1 from "./PNG/256x256/1.png";
 import a2 from "./PNG/256x256/2.png";
@@ -31,7 +32,8 @@ const SignupValues = {
   avatar:""
 };
 
-const Login = (props) => {
+const Login = () => {
+
   const [signup, setSignup] = useState(SignupValues);
   const [isActive, setActive] = useState("true");
   const [show, setShow] = useState(false);
@@ -42,14 +44,12 @@ const Login = (props) => {
   const [avatar, setAvatars] = useState("");
   const history = useHistory();
 
+  const toast = useToast();
+
   const inputChange = (e) => {
     setError("");
     setSignup({ ...signup, [e.target.name]: e.target.value });
     console.log(signup);
-  };
-
-  const handleToggle = () => {
-    setActive(!isActive);
   };
 
   const setAvatar = (e) => {
@@ -70,8 +70,6 @@ const Login = (props) => {
     console.log(e.target.value);
     setUniversity(e.target.value);
     setSignup({ ...signup, [e.target.name]: e.target.value });
-    console.log(signup);
-    console.log(signup);
   };
 
   const SignupUser = async (e) => {
@@ -80,9 +78,17 @@ const Login = (props) => {
     if (/.+@.+\.[A-Za-z]+$/.test(signup.email)) {
       const url = `${API}/signup`;
       const res1 = await axios.post(url, signup);
-      if (res1) {
+      if (res1.data.success) {
+        setShow(false); 
         history.push("/Login");
-        setShow(false);
+      } else {
+        setShow(false); 
+        toast({
+          title: "Failed",
+          description: res1.data.message,
+          status: "error",
+          isClosable:false
+        });
       }
     } else {
       console.log("Enter a Valid Email");

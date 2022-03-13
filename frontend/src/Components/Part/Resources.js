@@ -11,17 +11,22 @@ import SecFooter from "./SecFooter";
 import "./Home.css";
 import { Helmet } from "react-helmet";
 import "bootstrap/dist/css/bootstrap.min.css";
-
 import { Snackbar } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import { API } from "./API";
+import { useDispatch, useSelector } from 'react-redux';
+import { getUnivResources } from "../../actions/resourceAction";
 
 function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
+  return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
-export default function Resources() {
-  const [univresources, setUnivresources] = useState([]);
+const Resources = () => {
+
+  const dispatch = useDispatch();
+  const ResourcesState = useSelector((state) => state.getResourcesReducer);
+  const { resources, loadingresource, errorresource } = ResourcesState;
+
   const [opend, setOpend] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -31,46 +36,31 @@ export default function Resources() {
       return;
     }
     setOpend(false);
-  };
+  }
 
-  
+
   const handleClickd = () => {
     setOpend(true);
-  };
+  }
 
 
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
-      return;
+       return;
     }
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
-  
+
   const handleClick = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
-
-  const getAllResources = async () => {
-    const resources = await axios.get(
-      `${API}/getResources`,
-      {
-        headers: {
-          Authorization: "CollegeDost " + localStorage.getItem("jwt"),
-        },
-      }
-    );
-
-    console.log(resources.data);
-
-    setUnivresources(resources.data.Recentresources);
-  };
 
   useEffect(() => {
-    getAllResources();
-  }, [univresources]);
+    dispatch(getUnivResources());
+  }, [dispatch]);
 
   const [resourceName, setResourceName] = useState("");
   const [fileurl, setFileUrl] = useState("");
@@ -104,7 +94,7 @@ export default function Resources() {
       },
       {
         headers: {
-          Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+          Authorization:localStorage.getItem("jwt"),
         },
       }
     );
@@ -139,15 +129,15 @@ export default function Resources() {
           onChange={(e) => setResourceName(e.target.value)}
         />
 
-<Snackbar open={opend} autoHideDuration={3000} onClose={handleClosed}>
+        <Snackbar open={opend} autoHideDuration={3000} onClose={handleClosed}>
           <Alert onClose={handleClosed} severity="info">
             Resource Added
           </Alert>
         </Snackbar>
 
 
-        
-<Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+
+        <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="info">
             Resource Uploaded
           </Alert>
@@ -169,8 +159,8 @@ export default function Resources() {
       </div>
       <h3 className="h">Resources Uploaded Recently</h3>
 
-      {univresources.length > 0 ? (
-        univresources.map((r) => (
+      {resources.length > 0 ? (
+        resources.map((r) => (
           <div className="resource_univ">
             <p>Uploaded By : {r.resourceUploaderName.name}</p>
             <p>Resource Name:{r.resourcesname}</p>
@@ -207,3 +197,5 @@ export default function Resources() {
     </div>
   );
 }
+
+export default Resources;

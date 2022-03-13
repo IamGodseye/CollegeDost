@@ -16,14 +16,17 @@ import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import { Snackbar } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import { API } from "./API";
+import { useToast } from "@chakra-ui/react";
+import { useDispatch } from "react-redux";
+import { getAllPosts } from "../../actions/postAction";
+import { getCollegePosts } from "../../actions/collegePostAction";
 
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 export default function Question(props) {
+
   const [user, setUser] = useState([]);
-  // const[currentUser,setCurrentUser] = useState({});
+  const toast = useToast();
+  const dispatch = useDispatch();
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
   const [opend, setOpend] = useState(false);
@@ -37,7 +40,6 @@ export default function Question(props) {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
   };
 
@@ -61,11 +63,10 @@ export default function Question(props) {
     }
   };
   useEffect(() => {
-    // setCurrent(JSON.parse(localStorage.getItem("user")));
-    // setCurrent(JSON.parse(localStorage.getItem("user")))
     setCurrent(JSON.parse(localStorage.getItem("user")));
     console.log(JSON.parse(localStorage.getItem("user")));
   }, []);
+
   const likePost = async (postId) => {
     await takeBackDislike(postId);
     handleClick();
@@ -77,11 +78,14 @@ export default function Question(props) {
         { postId },
         {
           headers: {
-            Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+            Authorization: localStorage.getItem("jwt"),
           },
         }
       )
-      .then((res) => {})
+      .then((res) => {
+        dispatch(getAllPosts());
+        dispatch(getCollegePosts());
+      })
       .catch((e) => {
         console.log("Error  :" + e);
       });
@@ -96,11 +100,13 @@ export default function Question(props) {
         { id },
         {
           headers: {
-            Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+            Authorization:  localStorage.getItem("jwt"),
           },
         }
       )
       .then((res) => {
+        dispatch(getAllPosts());
+         dispatch(getCollegePosts());
         console.log(res);
       })
       .catch((e) => {
@@ -110,7 +116,6 @@ export default function Question(props) {
 
   const dislike = async (id) => {
     await takeBackLike(id);
-    // let newData;
     handleClickd();
     console.log("Liking");
     console.log(id);
@@ -120,11 +125,14 @@ export default function Question(props) {
         { id },
         {
           headers: {
-            Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+            Authorization: localStorage.getItem("jwt"),
           },
         }
       )
-      .then((res) => {})
+      .then((res) => {
+        dispatch(getAllPosts());
+         dispatch(getCollegePosts());
+      })
       .catch((e) => {
         console.log("Error  :" + e);
       });
@@ -139,11 +147,13 @@ export default function Question(props) {
         { id },
         {
           headers: {
-            Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+            Authorization: localStorage.getItem("jwt"),
           },
         }
       )
       .then((res) => {
+        dispatch(getAllPosts());
+         dispatch(getCollegePosts());
         console.log(res);
       })
       .catch((e) => {
@@ -154,12 +164,13 @@ export default function Question(props) {
   const deletePost = async (id) => {
     const dp = await axios.delete(`${API}/deletePost/${id}`, {
       headers: {
-        Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+        Authorization: localStorage.getItem("jwt"),
       },
     });
 
     if (dp.status === 201) {
-      window.location.reload();
+      dispatch(getAllPosts());
+       dispatch(getCollegePosts());
       console.log("Post Deleted");
     }
   };
@@ -171,10 +182,17 @@ export default function Question(props) {
       { id },
       {
         headers: {
-          Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+          Authorization: localStorage.getItem("jwt"),
         },
       }
-    );
+    ).then((s) => {
+      if (s.data.success) {
+        toast({
+          title:'Post Reported',
+          status: 'warning',
+        })
+      }
+    });
   };
 
   return (
@@ -196,18 +214,6 @@ export default function Question(props) {
           }}
           alt=""
         />
-
-        <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="info">
-            Liked Successfully
-          </Alert>
-        </Snackbar>
-
-        <Snackbar open={opend} autoHideDuration={3000} onClose={handleClosed}>
-          <Alert onClose={handleClosed} severity="info">
-            Disliked Successfully
-          </Alert>
-        </Snackbar>
         <Link
           style={{
             textStyle: "none",
@@ -252,10 +258,7 @@ export default function Question(props) {
       ) : (
         ""
       )}
-      <div
-        className="reaction"
-        //style={{ background: "#777" }}
-      >
+      <div className="reaction" >
         {props.likes.includes(current._id) ? (
           <button className="like">
             <ThumbUpIcon

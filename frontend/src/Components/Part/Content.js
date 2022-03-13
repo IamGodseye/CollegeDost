@@ -1,4 +1,4 @@
-import React,{  useState } from "react";
+import React, { useState } from "react";
 import Question from "./Que";
 import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
 import "./Home.css";
@@ -11,64 +11,53 @@ import CommentModal from "./CommentModal";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { API } from "./API";
-import {useDispatch,useSelector} from 'react-redux';
-import { getAllPosts } from "../../actions/postAction";
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllPosts, getRecentAllPosts } from "../../actions/postAction";
+import { getRecentResources } from "../../actions/resourceAction";
 
 export default function Content() {
   const dispatch = useDispatch();
-  const AllpostState =  useSelector(state=>state.getallPostReducer);
-  const {loading,posts,error} = AllpostState; 
-  // const [posts, setPosts] = useState([]);
-  const [recentResources, setRecentResources] = useState([]);
-  const [recentPosts, setRecentPosts] = useState([]);
-
-  const getRecentPosts = async () => {
-    const recentPostsxD = await axios.get(
-      `${API}/getRecentPosts`,
-      {
-        headers: {
-          Authorization: "CollegeDost " + localStorage.getItem("jwt"),
-        },
-      }
-    );
-    if (recentPostsxD.status === 201) {
-      setRecentPosts(recentPostsxD.data);
-    }
-
-    const getRecentResources = await axios.get(
-      `${API}/getRecentResources`,
-      {
-        headers: {
-          Authorization: "CollegeDost " + localStorage.getItem("jwt"),
-        },
-      }
-    );
-    if (getRecentResources.data) {
-      setRecentResources(getRecentResources.data);
-    }
-
-    // const globalposts = await axios.get(
-    //   `${API}/globalposts`
-    // );
-    // if (globalposts.data) {
-    //   console.log(globalposts.data.posts);
-    //   setPosts(globalposts.data.posts);
-    // }
-  };
+  const AllpostState = useSelector(state => state.getallPostReducer);
+  const RecentPostState = useSelector(state => state.getRecentAllPostsReducer);
+  const RecentResourcesState = useSelector(state => state.getRecentResourcesReducer);
+  const { loading, posts, error } = AllpostState;
+  const { recentposts, loadingrecent, errorrecent } = RecentPostState;
+  const { recentResources } = RecentResourcesState;
 
   useEffect(() => {
-    getRecentPosts();
     dispatch(getAllPosts());
-  },[dispatch]);
+    dispatch(getRecentResources());
+    dispatch(getRecentAllPosts());
+  }, [dispatch]);
 
-  
+
   return (
     <div className="content">
       <div className="sidebar">
         <hr />
         <h1> Recently Asked Questions</h1>
-        {recentPosts.length > 0 ? (
-          recentPosts.map((i, index) => (
+        {errorrecent && (
+          <div>
+            Error
+          </div>
+        )}
+        {loadingrecent && (
+          <div
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginLeft: "40%",
+            }}
+          >
+            <span
+              className="spinner-border spinner-border-lm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+          </div>
+        )}
+        {recentposts && (
+          recentposts.map((i, index) => (
             <div>
               <hr />
               <Link
@@ -90,7 +79,12 @@ export default function Content() {
               <p>{i.body}</p>
             </div>
           ))
-        ) : (
+        )}
+        <hr />
+      </div>
+      <div className="feed">
+        <Editor university={false} />
+        {loading && (
           <div
             style={{
               justifyContent: "center",
@@ -105,25 +99,26 @@ export default function Content() {
             ></span>
           </div>
         )}
-        <hr />
-      </div>
-      <div className="feed">
-        <Editor university={false} />
         {error && <div>Error</div>}
-        {(!loading && !error )? (
+        {(!loading && !error) && (
           posts.map((p) => (
             <Question
               description={p.body}
               hasbeenCommented={p.hasBeenCommented}
               comments={p.comments.map((x) => (
                 <div>
+                  <Link to={`/user?${x?.commentedBy?._id}`} style={{
+                     textDecoration:"none"
+                  }}>
                   <p
                     style={{
-                      fontWeight: "bold",
+                        fontWeight: "bold",
+                        textDecoration:"none"
                     }}
                   >
                     {x.commentedBy.name}
-                  </p>
+                    </p>
+                    </Link>
                   <p>{x.text}</p>
                 </div>
               ))}
@@ -135,21 +130,6 @@ export default function Content() {
               photo={p.photo}
             />
           ))
-        ) : (
-          
-          <div
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              marginLeft: "40%",
-            }}
-          >
-            <span
-              className="spinner-border spinner-border-lm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-          </div>
         )}
       </div>
       <div className="ad sidebar2">
@@ -161,6 +141,7 @@ export default function Content() {
         >
           Recently Added Resources
         </h1>
+       
         {recentResources.length > 0 ? (
           recentResources.map((r) => (
             <div className="resource_univs res_card">
@@ -175,21 +156,9 @@ export default function Content() {
               </a>
             </div>
           ))
-        ) : (
-          <div
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              marginLeft: "10%",
-            }}
-          >
-            <span
-              className="spinner-border spinner-border-lm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-          </div>
-        )}
+        ):<div className="resource_univs res_card">
+        No Resources Available Currently
+       </div>}
         <hr />
       </div>
     </div>

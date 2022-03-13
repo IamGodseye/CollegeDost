@@ -7,11 +7,11 @@ const User = mongoose.model("User");
 module.exports = (req, res, next) => {
     const { authorization } = req.headers;
     if (!authorization) {
-        res.status(401).json({ error: "You are not Logged In !!" });
+      return res.status(401).json({ error: "You are not Logged In !!" });
     }
-    const token = authorization.replace("CollegeDost ", "");
+   
 
-    jwt.verify(token, "CollegeDostJS", (err, payload) => {
+    jwt.verify(authorization, "CollegeDostJS", (err, payload) => {
         if (err) {
             return res.status(401).json({ error: "You must be logged in" });
         }

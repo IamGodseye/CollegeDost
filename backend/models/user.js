@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
 
-    confirmed: {
+    verified: {
         type: Boolean,
         default: false
     },
@@ -65,6 +65,10 @@ const userSchema = new mongoose.Schema({
         type: ObjectId,
         ref: "Message"
     }],
+
+    verifyEmailToken:  String,
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
 
 
 });

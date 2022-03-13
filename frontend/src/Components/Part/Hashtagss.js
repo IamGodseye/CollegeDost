@@ -26,12 +26,14 @@ import "./Home.css";
 import { API } from "./API";
 
 export default function HashTag({match}) {
+
   const [posts, setPosts] = useState([]);
   const[hashTag,setHashTag]=useState([]);
+  
   const getLastestHashtags=async(e)=>{
     const d = await axios.get(`${API}/topHashtags`,{
       headers:{
-        Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+        Authorization:localStorage.getItem("jwt"),
       }
     });
     if(d.status===201){
@@ -46,7 +48,7 @@ export default function HashTag({match}) {
       hashtag:search.replace("?","#")
     },{
       headers:{
-        "Authorization": "CollegeDost " + localStorage.getItem("jwt"),
+        "Authorization": localStorage.getItem("jwt"),
       }
     });
 
@@ -89,9 +91,6 @@ export default function HashTag({match}) {
     }
       
       <div className="secnav-items add-Question">
-        {/* <button className="btn btn-outline-success">
-          <b>+</b>
-        </button> */}
       </div>
     </div>
     </div>

@@ -13,7 +13,7 @@ const Messenger = () => {
   const getChats = async() => {
     const c = await axios.get("http://localhost:4000/getUserChats", {
       headers: {
-        Authorization: "CollegeDost " + localStorage.getItem("jwt")
+        Authorization: localStorage.getItem("jwt")
       }
     });
 

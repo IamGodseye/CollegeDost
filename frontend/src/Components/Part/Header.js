@@ -16,19 +16,6 @@ export default function Header() {
     history.push("/");
     window.location.reload();
   };
-  // const[resource,setResource]=useState([]);
-  // const [ open, setOpen ] = useState(true)
-  // const getSearched=async(text)=>{
-  //   const response = await axios.post('http://localhost:7000/getSearched',{
-  //     query:text
-  //   },{
-  //     headers:{
-  //       "Authorization": "CollegeDost " + localStorage.getItem("jwt")
-  //     }
-  //   });
-  //   console.log(response.data);
-  //   setResource(response.data);
-  // }
   return (
     <div>
       <nav class="navbar navbar-expand-lg navbar-dark ">
@@ -76,43 +63,6 @@ export default function Header() {
                   Resources
                 </Link>
               </li>
-              {/* <li class="nav-item">
-                <Link class="nav-link" to="/Messenger">
-                  Messenger
-                </Link>
-              </li> */}
-              {/* <li class="nav-item dropdown">
-                <a
-                  class="nav-link dropdown-toggle"
-                  href="#"
-                  id="navbarDropdownMenuLink"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Dropdown link
-                </a>
-                <ul
-                  class="dropdown-menu"
-                  aria-labelledby="navbarDropdownMenuLink"
-                >
-                  <li>
-                    <a class="dropdown-item" href="#">
-                      Action
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="#">
-                      Another action
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="#">
-                      Something else here
-                    </a>
-                  </li>
-                </ul>
-              </li> */}
               <li class="nav-item">
                 <form class="d-flex">
                   <input
@@ -162,6 +112,9 @@ export default function Header() {
           />
         </Link>
         <button
+          style={{
+            marginLeft:"20px"
+          }}
           class="logout btn btn-outline-success"
           type="submit"
           onClick={() => Logout()}

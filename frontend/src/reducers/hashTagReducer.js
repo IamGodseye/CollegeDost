@@ -3,17 +3,17 @@ export const getAllHashtagsReducer = (state = { hashTags: [] }, action) => {
         case 'GET_ALL_HASHTAG_REQ':
             return {
                 ...state,
-                loading: true
+                loadingAllHashtags: true
             }
         case 'GET_ALL_HASHTAG_SUCCESS':
             return {
-                posts: action.payload,
-                loading: false
+                hashTags: action.payload,
+                loadingAllHashtags: false
             }
         case 'GET_ALL_HASHTAG_FAIL':
             return {
-                error: action.payload,
-                loading: false
+                errorAllHashtags: action.payload,
+                loadingAllHashtags: false
             }
         default: return state
     }
@@ -21,22 +21,22 @@ export const getAllHashtagsReducer = (state = { hashTags: [] }, action) => {
 
 
 
-export const getCollegeHashTagsReducer = (state = { hashTags: [] }, action) => {
+export const getCollegeHashTagsReducer = (state = { hashTagsUniv: [] }, action) => {
     switch (action.type) {
-        case 'GET_ALL_HASHTAG_REQ':
+        case 'GET_COLLEGE_HASHTAG_REQ':
             return {
                 ...state,
-                loading: true
+                loadinghashtaguniv: true
             }
-        case 'GET_ALL_HASHTAG_SUCCESS':
+        case 'GET_COLLEGE_HASHTAG_SUCCESS':
             return {
-                posts: action.payload,
-                loading: false
+                hashTagsUniv: action.payload,
+                loadinghashtaguniv: false
             }
-        case 'GET_ALL_HASHTAG_FAIL':
+        case 'GET_COLLEGE_HASHTAG_FAIL':
             return {
-                error: action.payload,
-                loading: false
+                errorhashtaguniv: action.payload,
+                loadinghashtaguniv: false
             }
         default: return state
     }

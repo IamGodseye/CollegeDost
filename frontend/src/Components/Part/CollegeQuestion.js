@@ -14,15 +14,16 @@ import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import { API } from "./API";
 import { Snackbar } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
+import { useDispatch } from "react-redux";
+import { getCollegePosts } from "../../actions/collegePostAction";
+import { getUserposts, getUserUnivposts } from "../../actions/postAction";
 
 
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 
 export default function CollegeQuestion(props) {
+
+
   const [text, setText] = useState("");
   const [user, setUser] = useState([]);
   const [liked, setLiked] = useState(false);
@@ -30,6 +31,8 @@ export default function CollegeQuestion(props) {
   const [open, setOpen] = useState(false);
   const [opend, setOpend] = useState(false);
   const [current, setCurrent] = useState([]);
+
+  const dispatch = useDispatch();
 
   
   const handleClick = () => {
@@ -40,36 +43,18 @@ export default function CollegeQuestion(props) {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
   };
-
-  
 
   const handleClickd = () => {
     setOpend(true);
   };
 
-  const handleClosed = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpend(false);
-  };
 
-
-  const getPostUser = async (id) => {
-    const usd = await axios.post(
-      `${API}/getUserDetails`,
-      { id }
-    );
-    if (usd) {
-      setUser(usd.data);
-    }
-  };
   useEffect(() => {
     setCurrent(JSON.parse(localStorage.getItem("user")));
   }, []);
+  
   const likePost = async (postId) => {
     await takeBackDislike(postId);
     console.log("Liking");
@@ -79,11 +64,15 @@ export default function CollegeQuestion(props) {
         { postId },
         {
           headers: {
-            Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+            Authorization:localStorage.getItem("jwt"),
           },
         }
       )
-      .then((res) => {})
+      .then((res) => {
+        dispatch(getCollegePosts());
+        dispatch(getUserposts());
+        dispatch(getUserUnivposts());
+      })
       .catch((e) => {
         console.log("Error  :" + e);
       });
@@ -98,11 +87,14 @@ export default function CollegeQuestion(props) {
         { id },
         {
           headers: {
-            Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+            Authorization:localStorage.getItem("jwt"),
           },
         }
       )
       .then((res) => {
+        dispatch(getCollegePosts());
+          dispatch(getUserposts());
+        dispatch(getUserUnivposts());
         console.log(res);
       })
       .catch((e) => {
@@ -115,13 +107,15 @@ export default function CollegeQuestion(props) {
       `${API}/deleteUnivPost/${id}`,
       {
         headers: {
-          Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+          Authorization:localStorage.getItem("jwt"),
         },
       }
     );
 
     if (dp.status === 201) {
-      window.location.reload();
+      dispatch(getCollegePosts());
+        dispatch(getUserposts());
+        dispatch(getUserUnivposts());
       console.log("Post Deleted");
     }
   };
@@ -133,7 +127,7 @@ export default function CollegeQuestion(props) {
       { id },
       {
         headers: {
-          Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+          Authorization:localStorage.getItem("jwt"),
         },
       }
     );
@@ -150,11 +144,15 @@ export default function CollegeQuestion(props) {
         { id },
         {
           headers: {
-            Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+            Authorization:localStorage.getItem("jwt"),
           },
         }
       )
-      .then((res) => {})
+      .then((res) => {
+        dispatch(getCollegePosts());
+          dispatch(getUserposts());
+        dispatch(getUserUnivposts());
+      })
       .catch((e) => {
         console.log("Error  :" + e);
       });
@@ -169,11 +167,14 @@ export default function CollegeQuestion(props) {
         { id },
         {
           headers: {
-            Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+            Authorization:localStorage.getItem("jwt"),
           },
         }
       )
       .then((res) => {
+        dispatch(getCollegePosts());
+          dispatch(getUserposts());
+        dispatch(getUserUnivposts());
         console.log(res);
       })
       .catch((e) => {
@@ -200,17 +201,6 @@ export default function CollegeQuestion(props) {
           }}
           alt=""
         />
-          <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="info">
-            Liked Successfully
-          </Alert>
-        </Snackbar>
-
-        <Snackbar open={opend} autoHideDuration={3000} onClose={handleClosed}>
-          <Alert onClose={handleClosed} severity="info">
-            Disliked Successfully
-          </Alert>
-        </Snackbar>
         <Link
           style={{
             textStyle: "none",

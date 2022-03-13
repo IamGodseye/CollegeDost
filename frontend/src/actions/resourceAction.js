@@ -4,9 +4,13 @@ import {API} from '../Components/Part/API';
 export const getUnivResources = () => async(dispatch)=>{
     dispatch({type:'GET_UNIV_RESOURCES_REQ'});
     try{
-        const response = await axios.get(`${API}/getResources`);
+        const response = await axios.get(`${API}/getResources`,{
+            headers:{
+                Authorization: localStorage.getItem("jwt"),
+            }
+        });
         console.log(response.data);
-        dispatch({type:'GET_UNIV_RESOURCES_SUCCESS',payload:response.data})
+        dispatch({type:'GET_UNIV_RESOURCES_SUCCESS',payload:response.data.Recentresources})
     }catch(e){
         dispatch({type:'GET_UNIV_RESOURCES_FAIL',payload:e})
     }
@@ -14,13 +18,17 @@ export const getUnivResources = () => async(dispatch)=>{
 
 
 export const getRecentResources = () => async(dispatch)=>{
-    dispatch({type:'GET_UNIV_RESOURCES_REQ'});
+    dispatch({type:'GET_RECENT_UNIV_RESOURCES_REQ'});
     try{
-        const response = await axios.get(`${API}/getResources`);
+        const response = await axios.get(`${API}/getRecentResources`,{
+            headers:{
+                Authorization: localStorage.getItem("jwt"),
+            }
+        });
         console.log(response.data);
-        dispatch({type:'GET_UNIV_RESOURCES_SUCCESS',payload:response.data})
+        dispatch({type:'GET_RECENT_UNIV_RESOURCES_SUCCESS',payload:response.data})
     }catch(e){
-        dispatch({type:'GET_UNIV_RESOURCES_FAIL',payload:e})
+        dispatch({type:'GET_RECENT_UNIV_RESOURCES_FAIL',payload:e})
     }
 }
 
@@ -29,7 +37,7 @@ export const addResources = (resource) => async(dispatch) =>{
     try{
         const response = await axios.post(`${API}/addResources`,{resource},{
             headers:{
-                Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+                Authorization: localStorage.getItem("jwt"),
             }
         });
         dispatch({type:'ADD_RESOURCES_SUCCESS',payload:response.data});

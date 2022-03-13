@@ -6,7 +6,7 @@ export const addMainComment = (comment,postId) => async(dispatch)=>{
     try{
         const response = await axios.post(`${API}/maincomment`,{text:comment,postId:postId},{
             headers: {
-                Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+                Authorization: localStorage.getItem("jwt"),
               }
         });
         console.log(response.data);
@@ -22,7 +22,7 @@ export const addUnivComment = (comment,postId) => async(dispatch) =>{
     try{
         const response = await axios.post(`${API}/univcomment`,{text:comment,postId:postId},{
             headers: {
-                Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+                Authorization: localStorage.getItem("jwt"),
               }
         });
         console.log(response.data);

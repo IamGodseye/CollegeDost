@@ -6,12 +6,12 @@ import "./Signup.css";
 import "./Login.css";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { AuthContext } from "../../ContextProvider/ContextProvider";
-
 import "react-circular-progressbar/dist/styles.css";
 import { Helmet } from "react-helmet";
 import ChangingProgressProvider from "./ChangingProgress";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { API } from "./API";
+import { useToast } from '@chakra-ui/react';
 
 const LoginValues = {
   email: "",
@@ -24,6 +24,9 @@ const Login = (props) => {
   const [login, setLogin] = useState(LoginValues);
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
+
+  const toast = useToast();
+
   const history = useHistory();
   // const { account, setAccount } = useContext(LoginContext);
   const handleToggle = () => {
@@ -44,11 +47,22 @@ const Login = (props) => {
       const res = await axios.post(url, login);
       console.log("Checking");
       console.log(res.data);
-      if(res.status===201){
-        
+      if (res.data.success) {
+        console.log(res.data);
         dispatch({type:"LOGIN_SUCCESS",payload:res.data.user});
         localStorage.setItem("jwt",res.data.token);
-       window.location.reload();
+        window.location.reload();
+        toast({
+          title: "Success",
+          description: "Login Successfull",
+          status: "success"
+      });
+      } else if (!res.data.success) {
+         toast({
+          title: "Failed",
+          description: res?.data?.error,
+          status: "error"
+      });
       }
   }catch(e){
       dispatch({type:"LOGIN_FAILURE",payload:e});
@@ -157,6 +171,15 @@ const Login = (props) => {
               Login
             </button>
           )}
+          <Link
+            to="/forgetPassword"
+            style={{
+              textDecoration: "none",
+              color: "white",
+            }}
+          >
+            Forgot Password ?
+          </Link>
           <Link
             to="/"
             style={{

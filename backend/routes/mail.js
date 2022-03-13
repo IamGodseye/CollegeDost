@@ -3,13 +3,24 @@ const Token = require('../models/resetToken');
 const trans =  nodemailer.createTransport({
     service:"Gmail",
     auth:{
-        user:"harshitr2001@gmail.com",
-        pass:""
+        user:"harshitrathi200105@gmail.com",
+        pass:"kwjoyehfmxzzzugo"
     }
 });
 
-module.exports.sendResetEmail = async(email,token)=>{
-    const url = "http://localhost:4000";
+module.exports.sendResetEmail = async(url,email)=>{
+
+    await trans.sendMail({
+        from:"Email",
+        to:email,
+        subject:"Verify Your Account",
+        text:`Click This Link To Verify Your Account : ${url}`,
+        html:`<h3>
+        Click This Link To Verify Your Account : ${url}
+        </h3>`
+    }).then((s) => {
+        console.log(s);
+    })
 }
 
 module.exports.sendVerificationEmail = async(email,token)=>{
@@ -19,10 +30,10 @@ module.exports.sendVerificationEmail = async(email,token)=>{
     await trans.sendMail({
         from:"Email",
         to:email,
-        subject:"Verify Your Account | College Dost",
-        text:`Click This Link To Verify Your Account : <a href=${url}>Verify</a>`,
+        subject:"Verify Your Account",
+        text:`Click This Link To Verify Your Account : ${url}`,
         html:`<h3>
-        Click This Link To Verify Your Account : <a href=${url}>Verify</a>
+        Click This Link To Verify Your Account : ${url}
         </h3>`
     })
 }

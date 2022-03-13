@@ -37,7 +37,7 @@ export default function HashTagCollege({match}) {
       hashtag:search.replace("?","#")
     },{
       headers:{
-        "Authorization": "CollegeDost " + localStorage.getItem("jwt"),
+        "Authorization": localStorage.getItem("jwt"),
       }
     });
 
@@ -47,7 +47,7 @@ export default function HashTagCollege({match}) {
 
   const d = await axios.get(`${API}/topHashtagsUniv`,{
       headers:{
-        Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+        Authorization: localStorage.getItem("jwt"),
       }
     });
     if(d.status===201){

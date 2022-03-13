@@ -7,7 +7,7 @@ export const LikeAllPost = (id) => async (dispatch) => {
             postId: id
         }, {
             headers: {
-                Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+                Authorization: localStorage.getItem("jwt"),
             }
         });
         console.log(response.data);
@@ -18,22 +18,22 @@ export const LikeAllPost = (id) => async (dispatch) => {
 }
 
 
-export const takeBackAllPostLike = (id) => async (dispatch) => {
-    try {
-        const response = await axios.post(`${API}/`, {
-            postId: id
-        }, {
-            headers: {
-                Authorization: "CollegeDost " + localStorage.getItem("jwt"),
-            }
-        });
-        if (response.status === 201) {
-            dispatch({ type: 'TAKE_ALLPOST_SUCCESS' });
-        }
-    } catch (e) {
-        dispatch({ type: 'TAKE_ALLPOST_FAIL', payload: e })
-    }
-}
+// export const takeBackAllPostLike = (id) => async (dispatch) => {
+//     try {
+//         const response = await axios.post(`${API}/`, {
+//             postId: id
+//         }, {
+//             headers: {
+//                 Authorization: localStorage.getItem("jwt"),
+//             }
+//         });
+//         if (response.status === 201) {
+//             dispatch({ type: 'TAKE_ALLPOST_SUCCESS' });
+//         }
+//     } catch (e) {
+//         dispatch({ type: 'TAKE_ALLPOST_FAIL', payload: e })
+//     }
+// }
 
 
 
@@ -43,7 +43,7 @@ export const LikeUnivPost = (id) => async (dispatch) => {
             postId: id
         }, {
             headers: {
-                Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+                Authorization: localStorage.getItem("jwt"),
             }
         });
         console.log(response.data);
@@ -60,7 +60,7 @@ export const takeBackUnivPostLike = (id) => async (dispatch) => {
             postId: id
         }, {
             headers: {
-                Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+                Authorization: localStorage.getItem("jwt"),
             }
         });
         if (response.status === 201) {
@@ -78,7 +78,7 @@ export const disLikeAllPost = (id) => async (dispatch) => {
             postId: id
         }, {
             headers: {
-                Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+                Authorization: localStorage.getItem("jwt"),
             }
         });
         dispatch({ type: 'DISLIKE_ALL_POST_SUCCESS', payload: response.data })
@@ -94,7 +94,7 @@ export const takeBackAllPostLike = (id) => async (dispatch) => {
             postId: id
         }, {
             headers: {
-                Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+                Authorization:  localStorage.getItem("jwt"),
             }
         });
         if (response.status === 201) {
@@ -113,7 +113,7 @@ export const disLikeUnivPost = (id) => async (dispatch) => {
             postId: id
         }, {
             headers: {
-                Authorization: "CollegeDost " + localStorage.getItem("jwt"),
+                Authorization:  localStorage.getItem("jwt"),
             }
         })
         dispatch({ type: 'DISLIKE_UNIV_POST_SUCCESS', payload: e });
@@ -124,19 +124,19 @@ export const disLikeUnivPost = (id) => async (dispatch) => {
 
 
 
-export const takeBackUnivPostLike = (id) => async (dispatch) => {
-    try {
-        const response = await axios.post(`${API}/`, {
-            postId: id
-        }, {
-            headers: {
-                Authorization: "CollegeDost " + localStorage.getItem("jwt"),
-            }
-        });
-        if (response.status === 201) {
-            dispatch({ type: 'TAKE_UNIVPOST_SUCCESS' });
-        }
-    } catch (e) {
-        dispatch({ type: 'TAKE_UNIVPOST_FAIL', payload: e })
-    }
-}
+// export const takeBackUnivPostLike = (id) => async (dispatch) => {
+//     try {
+//         const response = await axios.post(`${API}/`, {
+//             postId: id
+//         }, {
+//             headers: {
+//                 Authorization:  localStorage.getItem("jwt"),
+//             }
+//         });
+//         if (response.status === 201) {
+//             dispatch({ type: 'TAKE_UNIVPOST_SUCCESS' });
+//         }
+//     } catch (e) {
+//         dispatch({ type: 'TAKE_UNIVPOST_FAIL', payload: e })
+//     }
+// }
