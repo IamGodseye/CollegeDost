@@ -58,18 +58,10 @@ export default function UnivContent() {
             </div>
           ))
         ) : (
-          <div
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              marginLeft: "40%",
-            }}
-          >
-            <span
-              className="spinner-border spinner-border-lm"
-              role="status"
-              aria-hidden="true"
-            ></span>
+              <div style={{
+            marginTop:"20px"
+          }}>
+           No Questions Available Currently
           </div>
         )}
         <hr />

@@ -72,8 +72,8 @@ const Profile = () => {
                 <Post
                   description={p.body}
                   hasbeenCommented={p.hasBeenCommented}
-                  comments={p.comments.map((x) => (
-                    <div>
+                 comments={p.comments.map((x) => (
+                <div>
                   <Link to={`/user?${x?.commentedBy?._id}`} style={{
                      textDecoration:"none"
                   }}>
@@ -86,8 +86,9 @@ const Profile = () => {
                     {x.commentedBy.name}
                     </p>
                     </Link>
-                    </div>
-                  ))}
+                  <p>{x.text}</p>
+                </div>
+              ))}
                   id={p._id}
                   likes={p.likes}
                   dislikes={p.dislikes}
@@ -98,9 +99,9 @@ const Profile = () => {
               {univposts.map((p) => (
                 <CollegeQuestion
                   description={p.body}
-                  comments={p.comments.map((x) => (
-                    <div>
-                      <Link to={`/user?${x?.commentedBy?._id}`} style={{
+                    comments={p.comments.map((x) => (
+                <div>
+                  <Link to={`/user?${x?.commentedBy?._id}`} style={{
                      textDecoration:"none"
                   }}>
                   <p
@@ -112,8 +113,9 @@ const Profile = () => {
                     {x.commentedBy.name}
                     </p>
                     </Link>
-                    </div>
-                  ))}
+                  <p>{x.text}</p>
+                </div>
+              ))}
                   hasBeenCommented={p.hasBeenCommented}
                   id={p._id}
                   likes={p.likes}

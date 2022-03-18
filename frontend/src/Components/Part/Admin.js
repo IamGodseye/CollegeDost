@@ -47,18 +47,6 @@ export default function Admin() {
         <title>Admin</title>
       </Helmet>
       <Header />
-      {/* <div
-        className="nav"
-        style={{
-          height: "10vh",
-        }}
-      >
-        <h1>Admin Nav bar</h1>
-        <h2>Username</h2>
-        <button onClick={logout} className="logout">
-          Logout
-        </button>
-      </div> */}
       <div className="admin_content">
         <div className="admin_sidebar">
           <div className="admin_post_search">
@@ -69,7 +57,7 @@ export default function Admin() {
               onChange={(e) => setUserSearch(e.target.value)}
             />
             <button className="logout" onClick={() => getUser()}>
-              Search{" "}
+              Search
             </button>
             {user && user.map((i) => <User u={i} />)}
           </div>
@@ -78,7 +66,7 @@ export default function Admin() {
           <div className="admin_post_search">
             <input type="text" placeholder="write initials of title" />
             <button className="logout" onClick={""}>
-              Search{" "}
+              Search
             </button>
           </div>
           {getPosts.map((g) => (

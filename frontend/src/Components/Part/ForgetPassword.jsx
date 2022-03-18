@@ -28,12 +28,17 @@ const ForgotPassword = (props) => {
 
     const sendLink = async (e) => {
         e.preventDefault();
+        if (!email) {
+            setMessage("Please add a Valid Email");
+        }
         const pass = await axios.post(`${API}/forgotPassword`, {
             email
         });
+        console.log(pass.data);
         if (pass.data.success) {
             setMessage("You have been sent an verification link to change your password,Please do check in your spam folder too");
-        }else if(!pass.data.success){
+        } else if (!pass.data.success) {
+            setEmail("");
             setMessage("Any User With This Email Address Doesnot Exist")
         }
     }

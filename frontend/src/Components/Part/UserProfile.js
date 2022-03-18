@@ -12,37 +12,19 @@ import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Footer from "./Footer";
 import { API } from "./API";
+import { useDispatch, useSelector } from "react-redux";
+import { getThisUserAllposts, getThisUserUnivposts } from "../../actions/postAction";
 
 const UserProfile = () => {
-
-    const{search}=useLocation();
-    console.log(search);
-    const id = search.replace("?","");
-    const[user,setUser] = useState([]);
-    const[posts,setUserPosts]=useState([]);
-    const[univ,setUniv]=useState([]);
-    const getUserposts=async()=>{
-        const pi = await axios.get(`${API}/getUserPostById/${id}`,{
-            headers:{
-                "Authorization": localStorage.getItem("jwt"),
-            }
-        });
-        
-        if(pi.status===201){
-            setUserPosts(pi.data);
-            console.log(pi.data);
-        }
-
-        const pis = await axios.get(`${API}/getUnivUserPostById/${id}`,{
-          headers:{
-            "Authorization": localStorage.getItem("jwt"),
-          }
-        });
-    
-        if(pis.status===201){
-          setUniv(pis.data);
-          console.log(pis.data);
-        }
+  
+  const dispatch = useDispatch();
+  const { search } = useLocation();
+  const {posts} = useSelector((state) => state.getThisUserAllPostsReducer);
+  const {univposts} = useSelector((state) => state.getThisUserUnivPostsReducer);
+  const id = search.replace("?","");
+  const [user, setUser] = useState([]);
+  
+  const getUser=async()=>{
         const u = await axios.get(`${API}/getUserDetailsById/${id}`,{
           headers:{
               "Authorization":localStorage.getItem("jwt"),
@@ -55,8 +37,13 @@ const UserProfile = () => {
   }
 
   useEffect(() => {
-    getUserposts();
+    getUser();
   }, []);
+
+  useEffect(() => {
+    dispatch(getThisUserAllposts(id));
+    dispatch(getThisUserUnivposts(id));
+  }, [dispatch]);
 
   var HasPosted = false;
   return (
@@ -78,7 +65,7 @@ const UserProfile = () => {
           <div>{user.name}</div>
           <div>{user.email}</div>
           <div>{user.university}</div>
-          <div> Posts : {posts.length+univ.length}</div>
+          <div> Posts : {posts.length+univposts.length}</div>
           <div>
           <span>0 Followers</span>
           </div>
@@ -101,9 +88,18 @@ const UserProfile = () => {
             hasbeenCommented={p.hasBeenCommented}
             comments={p.comments.map((x)=>(
               <div>
-              <p style={{
-                fontWeight:"bold"
-              }}>{x.commentedBy.name}</p>
+                <Link to={`/user?${x?.commentedBy?._id}`} style={{
+                     textDecoration:"none"
+                  }}>
+                  <p
+                    style={{
+                        fontWeight: "bold",
+                        textDecoration:"none"
+                    }}
+                  >
+                    {x.commentedBy.name}
+                  </p>
+                    </Link>
               <p>{x.text}</p>
               </div>
             ))}
@@ -116,7 +112,7 @@ const UserProfile = () => {
             }
 
             {
-              univ.map(p=>(
+              univposts.map(p=>(
                 <Post
                 description={p.body}
             hasbeenCommented={p.hasBeenCommented}
@@ -131,9 +127,10 @@ const UserProfile = () => {
                         textDecoration:"none"
                     }}
                   >
-                    {x.commentedBy.name}aaa
-                    </p>
+                    {x.commentedBy.name}
+                  </p>
                     </Link>
+                   <p>{x.text}</p>
               </div>
             ))}
             id={p._id}

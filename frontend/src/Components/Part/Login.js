@@ -28,7 +28,6 @@ const Login = (props) => {
   const toast = useToast();
 
   const history = useHistory();
-  // const { account, setAccount } = useContext(LoginContext);
   const handleToggle = () => {
     setActive(!isActive);
   };
@@ -41,7 +40,6 @@ const Login = (props) => {
   const LoginUser = async (e) => {
     e.preventDefault();
     dispatch({type:"LOGIN_START"});
-  
     try{
       const url = `${API}/login`;
       const res = await axios.post(url, login);
@@ -55,57 +53,21 @@ const Login = (props) => {
         toast({
           title: "Success",
           description: "Login Successfull",
-          status: "success"
+          status: "success",
+          isClosable:false
       });
       } else if (!res.data.success) {
          toast({
           title: "Failed",
           description: res?.data?.error,
-          status: "error"
+          status: "error",
+          isClosable:false
       });
       }
   }catch(e){
       dispatch({type:"LOGIN_FAILURE",payload:e});
   }
-
-    // e.preventDefault();
-    // let res1;
-    // setShow(true);
-    // if (login.email != "" && login.password != "") {
-    //   const url = `${API}/login`;
-    //   const res = await axios.post(url, login);
-
-    //   console.log(res);
-
-    //     if (res.data.error) {
-    //       console.log("Fake");
-    //       setError("Invalid Credentials");
-    //       setShow(false);
-    //       return;
-    //     } else if(res.status===201) {
-    //       console.log(res.data.token);
-    //       console.log(res.data.user._id);
-    //       localStorage.setItem("id",res.data.user._id);
-    //       console.log(res.data.user);
-    //       setAccount(res.data.user);
-    //       setShowloginButton(false);
-    //       setShowlogoutButton(true);
-    //       localStorage.setItem("jwt", res.data.token);
-    //       localStorage.setItem("user", JSON.stringify(res.data.user));
-    //       // window.location.reload();
-    //       // console.log(JSON.parse(localStorage.getItem("user")).isAdmin);
-    //       history.push("/home");
-    //       setShow(false);
-    //     }
-    // } else {
-    //   console.log("Fake");
-    //   setError("Please Enter your Email and Password");
-    //   setShow(false);
-    //   return;
-
-
-
-    }
+}
 
   return (
     <div className="login signup">

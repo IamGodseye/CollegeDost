@@ -13,7 +13,7 @@ module.exports.sendResetEmail = async(url,email)=>{
     await trans.sendMail({
         from:"Email",
         to:email,
-        subject:"Verify Your Account",
+        subject:"Forget Password",
         text:`Click This Link To Verify Your Account : ${url}`,
         html:`<h3>
         Click This Link To Verify Your Account : ${url}
@@ -24,7 +24,7 @@ module.exports.sendResetEmail = async(url,email)=>{
 }
 
 module.exports.sendVerificationEmail = async(email,token)=>{
-    const url = "http://localhost:4000/user/verifyEmail?token="+token;
+    const url = `${process.env.FRONTEND_URL}/verify?token=${token}`;
     console.log(url);
 
     await trans.sendMail({

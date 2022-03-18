@@ -18,7 +18,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 import { API } from "./API";
 import { useToast } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
-import { getAllPosts } from "../../actions/postAction";
+import { getAllPosts, getThisUserAllposts, getThisUserUnivposts, getUserposts } from "../../actions/postAction";
 import { getCollegePosts } from "../../actions/collegePostAction";
 
 
@@ -84,7 +84,10 @@ export default function Question(props) {
       )
       .then((res) => {
         dispatch(getAllPosts());
+        dispatch(getUserposts());
         dispatch(getCollegePosts());
+         dispatch(getThisUserAllposts(props.postedBy._id));
+    dispatch(getThisUserUnivposts(props.postedBy._id));
       })
       .catch((e) => {
         console.log("Error  :" + e);
@@ -106,7 +109,10 @@ export default function Question(props) {
       )
       .then((res) => {
         dispatch(getAllPosts());
-         dispatch(getCollegePosts());
+                dispatch(getUserposts());
+        dispatch(getCollegePosts());
+         dispatch(getThisUserAllposts(props.postedBy._id));
+    dispatch(getThisUserUnivposts(props.postedBy._id));
         console.log(res);
       })
       .catch((e) => {
@@ -131,7 +137,10 @@ export default function Question(props) {
       )
       .then((res) => {
         dispatch(getAllPosts());
-         dispatch(getCollegePosts());
+        dispatch(getUserposts());
+        dispatch(getCollegePosts());
+         dispatch(getThisUserAllposts(props.postedBy._id));
+    dispatch(getThisUserUnivposts(props.postedBy._id));
       })
       .catch((e) => {
         console.log("Error  :" + e);
@@ -153,7 +162,10 @@ export default function Question(props) {
       )
       .then((res) => {
         dispatch(getAllPosts());
-         dispatch(getCollegePosts());
+                dispatch(getUserposts());
+        dispatch(getCollegePosts());
+         dispatch(getThisUserAllposts(props.postedBy._id));
+    dispatch(getThisUserUnivposts(props.postedBy._id));
         console.log(res);
       })
       .catch((e) => {
@@ -170,7 +182,10 @@ export default function Question(props) {
 
     if (dp.status === 201) {
       dispatch(getAllPosts());
-       dispatch(getCollegePosts());
+      dispatch(getUserposts());
+      dispatch(getCollegePosts());
+      dispatch(getThisUserAllposts(props.postedBy._id));
+      dispatch(getThisUserUnivposts(props.postedBy._id));
       console.log("Post Deleted");
     }
   };
@@ -303,14 +318,12 @@ export default function Question(props) {
           </button>
         )}
         <button className="answer">
-          {/* {
-            !current.isAdmin ? <DeleteOutlinedIcon/> : <div>s</div>
-          } */}
           <AnswerModal
             text={text}
             setText={setText}
             postId={props.id}
             isUniv={false}
+            id={props.postedBy._id}
           />
         </button>
 

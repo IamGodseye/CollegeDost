@@ -81,6 +81,12 @@ const Login = () => {
       if (res1.data.success) {
         setShow(false); 
         history.push("/Login");
+        toast({
+          title: "Success",
+          description: res1.data.message,
+          status:"success",
+          isClosable:false
+        });
       } else {
         setShow(false); 
         toast({
@@ -101,6 +107,7 @@ const Login = () => {
     getUnivs();
   }, []);
   return (
+    unis.length > 0 ?
     <div className="signup">
       <Helmet>
         <title>Signup</title>
@@ -276,7 +283,23 @@ const Login = () => {
           </form>
         </div>
       </div>
-    </div>
+      </div> :
+          <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <span
+            className="spinner-border spinner-border-md text-center"
+            style={{
+              height: "100px",
+              width: "100px",
+            }}
+            role="status"
+            aria-hidden="true"
+          ></span>
+        </div>
   );
 };
 export default Login;

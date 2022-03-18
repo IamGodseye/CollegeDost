@@ -7,7 +7,7 @@ import { addAllPostCommentReducer, addUnivCommentReducer } from './reducers/comm
 import { likeAllPostReducer, likeUnivPostReducer } from './reducers/likeReducer';
 import { addResourcesReducer, getRecentResourcesReducer, getResourcesReducer } from './reducers/resourceReducer';
 import { getAllHashtagsReducer, getCollegeHashTagsReducer } from './reducers/hashTagReducer';
-import { getUserAllPostsReducer, getUserUnivPostsReducer } from './reducers/userPostReducer';
+import { getThisUserAllPostsReducer, getThisUserUnivPostsReducer, getUserAllPostsReducer, getUserUnivPostsReducer } from './reducers/userPostReducer';
 
 const rootReducer = combineReducers({
     getallPostReducer:getallPostReducer,
@@ -26,7 +26,9 @@ const rootReducer = combineReducers({
     getRecentAllPostsReducer:getRecentAllPostsReducer,
     getRecentResourcesReducer: getRecentResourcesReducer,
     getUserAllPostsReducer: getUserAllPostsReducer,
-    getUserUnivPostsReducer:getUserUnivPostsReducer
+    getUserUnivPostsReducer: getUserUnivPostsReducer,
+    getThisUserAllPostsReducer: getThisUserAllPostsReducer,
+    getThisUserUnivPostsReducer:getThisUserUnivPostsReducer
 });
 
 const initialState = {};

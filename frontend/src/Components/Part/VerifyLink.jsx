@@ -12,6 +12,7 @@ import { Helmet } from "react-helmet";
 import ChangingProgressProvider from "./ChangingProgress";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { API } from "./API";
+import { useToast } from "@chakra-ui/react";
 
 const LoginValues = {
   email: "",
@@ -26,7 +27,7 @@ const VerifyLink = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const history = useHistory();
-
+  const toast = useToast();
   const { token } = useParams();
   console.log(token);
 
@@ -37,6 +38,19 @@ const VerifyLink = () => {
     }).then((s) => {
       if (s.data.success) {
         history.push("/");
+          toast({
+          title: "Success", 
+          description: s.data.message,
+          status:"success",
+          isClosable:true
+        });
+      } else {
+        toast({
+          title: "Failed", 
+          description: s.data.message,
+          status: "error",
+          isClosable:true
+        });
       }
     });
   }

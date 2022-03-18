@@ -8,7 +8,7 @@ import { API } from "./API";
 import { Snackbar } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useDispatch } from "react-redux";
-import { getAllPosts } from "../../actions/postAction";
+import { getAllPosts, getThisUserAllposts, getThisUserUnivposts } from "../../actions/postAction";
 import { getCollegePosts } from "../../actions/collegePostAction";
 
 const AnswerModal = (props) => {
@@ -43,14 +43,11 @@ const AnswerModal = (props) => {
     setOpend(false);
   };
 
-  
-
-
-
   useEffect(() => {
     setCurrent();
     setCurrent(JSON.parse(localStorage.getItem("user")));
   }, []);
+
   const addComment = async () => {
     handleClickd();
     const comment = await axios.put(
@@ -68,8 +65,9 @@ const AnswerModal = (props) => {
 
     if (comment) {
       dispatch(getAllPosts());
+      dispatch(getThisUserAllposts(props.id));
+      dispatch(getThisUserUnivposts(props.id));
       handleClick();
-      // window.location.reload()
       props.setText("");
       setShowModal(false);
     }
@@ -93,7 +91,8 @@ const AnswerModal = (props) => {
     if (comment) {
       dispatch(getCollegePosts());
       handleClick();
-      // window.location.reload()
+      dispatch(getThisUserAllposts(props.id));
+      dispatch(getThisUserUnivposts(props.id));
       props.setText("");
       setShowModal(false);
     }

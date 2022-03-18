@@ -17,7 +17,7 @@ const Dropzone = ({ onDrop, accept }) => {
           </p>
         ) : (
           <p className="dropzone-content" style={{ color: "white" }}>
-            Drag 'n' drop some files here, or click to select files
+            Please upload only image , if its pdf , add the link of the PDF in the below text box.
           </p>
         )}
       </div>

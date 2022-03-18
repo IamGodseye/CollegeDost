@@ -31,15 +31,10 @@ function App() {
         <AccountProvider>
           <Router>
             <Switch>
+              
               <Route exact path="/">
                 {user ? <Home /> : <Signup />}
               </Route>
-
-              {/* <Route exact path="/messenger">
-                <Suspense fallback={<CircularProgress />}>
-                  <Messenger />
-                </Suspense>
-              </Route> */}
               
               <Route exact path="/Login">
               { user ? <Redirect to="/home"/> : <Login />}

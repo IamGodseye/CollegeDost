@@ -63,6 +63,37 @@ export const getUserposts =  () => async(dispatch) => {
     }
 }
 
+export const getThisUserAllposts = (id) => async (dispatch) => {
+    dispatch({type:'GET_THIS_USER_ALL_POST_REQ'});
+    try {
+        const pi = await axios.get(`${API}/getUserPostById/${id}`,{
+            headers:{
+                "Authorization": localStorage.getItem("jwt"),
+            }
+        });
+        dispatch({ type: 'GET_THIS_USER_ALL_POST_SUCCESS', payload: pi.data });
+    } catch (e) {
+        dispatch({ type: 'GET_THIS_USER_ALL_POST_FAIL' });
+    }
+}
+
+export const getThisUserUnivposts = (id) => async (dispatch) => {
+    dispatch({type:'GET_THIS_USER_UNIV_POST_REQ'});
+    try {
+        const pi = await axios.get(`${API}/getUnivUserPostById/${id}`,{
+            headers:{
+                "Authorization": localStorage.getItem("jwt"),
+            }
+        });
+        dispatch({ type: 'GET_THIS_USER_UNIV_POST_SUCCESS', payload: pi.data });
+    } catch (e) {
+        dispatch({ type: 'GET_THIS_USER_UNIV_POST_FAIL' });
+    }
+}
+
+
+
+
 export const getUserUnivposts =  () => async(dispatch) => {
     dispatch({type:'GET_USER_UNIV_POST_REQ'});
     try {

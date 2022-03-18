@@ -65,7 +65,6 @@ export default function College() {
         }
         {
           hashTagsUniv.map((h) => (
-
             <div class="secnav-items one1">
               <Link to={`/hashtagCollege/?${h.hashTagtext.replace("#", "")}`}>{h.hashTagtext}</Link>
             </div>

@@ -78,7 +78,6 @@ const Resources = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-
         console.log(data.secure_url);
         setFileUrl(data.secure_url);
         handleClick();
@@ -100,10 +99,10 @@ const Resources = () => {
     );
     if (uploadingResource.status === 201) {
       handleClickd();
-      console.log("Resource Uploaded");
       setManualUrl("");
       setResourceName("");
       setFileUrl("");
+     dispatch(getUnivResources());
     }
   };
 
@@ -142,10 +141,9 @@ const Resources = () => {
             Resource Uploaded
           </Alert>
         </Snackbar>
-
         <Dropzone className="drop" onDrop={onDrop} />
         <input
-          placeholder="Paste the link of the resource here...."
+          placeholder="Paste the link of the resource here....(PDF)"
           name="resource"
           value={manualurl}
           style={{
@@ -162,30 +160,28 @@ const Resources = () => {
       {resources.length > 0 ? (
         resources.map((r) => (
           <div className="resource_univ">
-            <p>Uploaded By : {r.resourceUploaderName.name}</p>
+        <Link
+          style={{
+            textStyle: "none",
+            textDecoration: "none",
+            color: "white",
+          }}
+          to={`/user/?${r.resourceUploaderName._id}`}
+        >
+              <p>Uploaded By : {r.resourceUploaderName.name}</p>
+        </Link>
             <p>Resource Name:{r.resourcesname}</p>
-            <a href={r.resourceUrl} download target="__">
+            <a href={r.resourceUrl} target="__">
               <button className="resource_button_new">Get Resource</button>
             </a>
           </div>
         ))
       ) : (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <span
-            className="spinner-border spinner-border-md text-center"
-            style={{
-              height: "100px",
-              width: "100px",
-            }}
-            role="status"
-            aria-hidden="true"
-          ></span>
-        </div>
+          <div className="resource_univ" style={{
+             height:"100px"
+           }}>
+            No Resources Available Currently
+          </div>
       )}
 
       <div className="footer-huge">

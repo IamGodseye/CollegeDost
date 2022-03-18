@@ -34,7 +34,6 @@ router.post("/signup", async (req, res) => {
             return res.json({success:false, message: "User Already Exists" });
         }
         b.hash(password, 8)
-            
             .then(async (hashedpassword) => {
                 const user = new User({
                     email,
@@ -47,7 +46,7 @@ router.post("/signup", async (req, res) => {
                     .then(async (user) => {
                         const emailToken = crypto.randomBytes(20).toString("hex");
                         await mail.sendVerificationEmail(user.email,emailToken);
-                        res.status(201).json({success:true,message: "User Signup Successfull" });
+                        res.status(201).json({success:true,message: "User Signup Successfull,Please Verify Your Email" });
                     })
                     .catch((err) => {
                         console.log(err)
@@ -66,21 +65,23 @@ router.post("/login", async (req, res) => {
     if (!email || !password) {
         return res.status(422).json({success:false,message: "Please add email and password both" })
     }
-    // $and:[{email: email},{verified:true}]}
     await User.findOne({email})
         .then(SavedUser => {
             if (!SavedUser) {
                 return res.status(201).json({success:false,error: 'Invalid email or password' });
             }
+            if (SavedUser.verified === false) {
+                return res.status(201).json({success:false,error: 'Please Verify your Email' });
+            }
             b.compare(password, SavedUser.password)
-                .then(doMatch => {
+                .then((doMatch) => {
                     if (doMatch) {
                         const token = jwt.sign({ _id: SavedUser._id }, "CollegeDostJS")
                         console.log(token);
                         const { _id, name, email, university, avatar, isAdmin, confirmed } = SavedUser;
                         return res.status(201).json({success:true,token, user: { _id, name, email, university, avatar, isAdmin, confirmed } });
                     } else {
-                        return res.status(404).send({ error: 'Invalid email or password' })
+                        return res.status(201).send({ success:false, error: 'Invalid email or password' })
                     }
                 })
                 .catch(err => {
@@ -789,10 +790,7 @@ router.post('/searchuser', async (req, res) => {
             ],
         }
         : {};
-    const user = await User.find(keyword).find({
-        $and: [{ _id: { $ne: req.user._id } },
-        { blockedBy: { $nin: [req.user._id] } }, { blockedUsers: { $nin: [req.user._id] } }]
-    });
+    const user = await User.find(keyword).find({ _id: { $ne: req.user._id } });
 
     res.status(201).json({ user });
 });
@@ -934,7 +932,6 @@ router.post('/forgotPassword', async (req, res) => {
     const { email } = req.body;
     try {
         const user = await User.findOne({ email });
-        console.log(user);
         if (user) {
             const t = crypto.randomBytes(20).toString("hex");
             user.resetPasswordToken = t;
@@ -942,12 +939,15 @@ router.post('/forgotPassword', async (req, res) => {
             await user.save();
             const passwordLink = `${process.env.FRONTEND_URL}/resetPassword/${t}`;
             mail.sendResetEmail(passwordLink, email);
-        // .then((s) => {
-                res.status(201).json({
-                    success: true,
-                    message:"Reset Password Link Sent"
-                // });
-            })
+            res.status(201).json({
+                success: true,
+                message: "Reset Password Link Sent"
+            });
+        } else {
+             res.status(201).json({
+                success: false,
+                message: "Invalid Email"
+            });
         }
     } catch (e) {
         res.status(401).json(e)
@@ -984,14 +984,16 @@ router.post('/resetPassword/:token', async (req, res) => {
 });
 
 
-router.get('/user/verifyEmail', async (req, res) => {
+router.post('/user/verifyEmail', async (req, res) => {
     const token = req.body.token;
-    await User.findOneAndUpdate({ verifyEmailToken: token }, {
-        verified: true,
-        verifyEmailToken:null
-    }).then(() => {
-        res.status(201).json({ message: "User Verified Successfully" });
-    });
+    const find = await User.findOne({ verifyEmailToken: token });
+    if (find) {
+        find.verified = true;
+        find.verifyEmailToken = null;
+        await find.save();
+        return res.status(201).json({success:true, message: "User Verified Successfully" });
+    }
+    return res.status(201).json({success:false, message: "Invalid or Expired Token" });
 });
 
 

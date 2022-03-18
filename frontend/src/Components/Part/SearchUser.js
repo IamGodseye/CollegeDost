@@ -54,18 +54,6 @@ export default function SearchUser() {
                 <p style={{ color: "#b5e48c", fontWeight: "500" }}>
                   University : {r.university}
                 </p>
-                {/* <Link to="">
-                  <button
-                    className="btn btn-block btn-primary"
-                    style={{
-                      background: "#006A81",
-                      border: "2px solid black",
-                      color: "color",
-                    }}
-                  >
-                    
-                  </button>
-                </Link> */}
               </div>
             ))
           ) : (
