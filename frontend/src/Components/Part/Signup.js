@@ -58,6 +58,11 @@ const Login = () => {
     setAvatars(e.target.src);
     setSignup({ ...signup, avatar: avatar });
     console.log(signup);
+    toast({
+      title: "Avatar Selected",
+      status: "success",
+      isClosable:true
+    })
   };
 
   const getUnivs = async () => {
@@ -102,6 +107,7 @@ const Login = () => {
       setError("Please Enter a Valid Email");
     }
   };
+
 
   useEffect(() => {
     getUnivs();
