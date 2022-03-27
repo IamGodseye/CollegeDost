@@ -34,6 +34,31 @@ export const blockUser =  (state={user:{}},action)=>{
     }
 }
 
+
+export const loadUserReducer =  (state={user:{},isAuthenticated:false},action)=>{
+    switch(action.type){
+        case 'LOAD_USER_REQ':
+            return {
+                ...state,
+                loading:true
+            }
+        case 'LOAD_USER_SUCCESS':
+            return {
+                user: action.payload,
+                isAuthenticated:true,
+                loading:false
+            }  
+        case 'LOAD_USER_FAIL':
+            return {
+                loading: false,
+                isAuthenticated:false
+            }
+        default: return state; 
+
+    }
+}
+
+
 export const unblockUser =  (state={user:{}},action)=>{
 
     switch(action.type){

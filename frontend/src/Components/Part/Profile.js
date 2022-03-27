@@ -19,8 +19,8 @@ import { getUserposts, getUserUnivposts } from "../../actions/postAction";
 
 const Profile = () => {
 
-  const { user } = useContext(AuthContext);
-
+  // const { user } = useContext(AuthContext);
+   const { user,isAuthenticated } = useSelector((state) => state.loadUserReducer);
   const {posts} = useSelector((state) => state.getUserAllPostsReducer);
   const { univposts } = useSelector((state) => state.getUserUnivPostsReducer);
   
@@ -31,6 +31,7 @@ const Profile = () => {
     dispatch(getUserposts());
     dispatch(getUserUnivposts());
   }, [dispatch]);
+  
   var HasPosted = false;
   return (
     <div className="profile">
@@ -48,17 +49,17 @@ const Profile = () => {
           <img
             className="profile_pic pp"
             src={
-              user.avatar
-                ? user.avatar
+              user?.avatar
+                ? user?.avatar
                 : "https://res.cloudinary.com/harshit111/image/upload/v1627476410/q1rjnignh5djpnujltyy.png"
             }
             style={{ height: "250px", width: "250px" }}
             alt=""
           />
-          <div>{user.name}</div>
-          <div>{user.email}</div>
-          <div>{user.university}</div>
-          <div> Posts : {posts.length + univposts.length}</div>
+          <div>{user?.name}</div>
+          <div>{user?.email}</div>
+          <div>{user?.university}</div>
+          <div> Posts : {posts?.length + univposts?.length}</div>
         </div>
 
         <div className="profile_post">
@@ -71,6 +72,7 @@ const Profile = () => {
                 <Post
                   description={p.body}
                   hasbeenCommented={p.hasBeenCommented}
+                  photo={p.photo}
                  comments={p.comments.map((x) => (
                 <div>
                   <Link to={`/user?${x?.commentedBy?._id}`} style={{

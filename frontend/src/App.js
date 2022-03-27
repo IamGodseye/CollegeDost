@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense, useContext } from "react";
+import React, { useState, lazy, Suspense, useContext, useEffect } from "react";
 import Signup from "./Components/Part/Signup";
 import Login from "./Components/Part/Login";
 import Admin from "./Components/Part/Admin";
@@ -21,23 +21,32 @@ import { CircularProgress } from "@material-ui/core";
 import ForgetPassword from "./Components/Part/ForgetPassword";
 import VerifyLink from "./Components/Part/VerifyLink";
 import ResetPassword from "./Components/Part/ResetPassword";
+import { useDispatch, useSelector } from "react-redux";
+import { loadUser } from "./actions/userAction";
 // import Messenger from "./Components/Messenger";
 const Messenger = lazy(() => import('./Components/Part/Messenger/ChatDialog'));
 function App() {
-  const {user} = useContext(AuthContext);
+
+  const dispatch = useDispatch();
+  const { user,isAuthenticated } = useSelector((state) => state.loadUserReducer);
+
+  useEffect(() => {
+    dispatch(loadUser());
+  }, []);
+
   return (
     <React.Fragment>
       <AuthContextProvider>
         <AccountProvider>
           <Router>
+            
             <Switch>
-              
               <Route exact path="/">
-                {user ? <Home /> : <Signup />}
+                {isAuthenticated ? <Home /> : <Signup />}
               </Route>
               
               <Route exact path="/Login">
-              { user ? <Redirect to="/home"/> : <Login />}
+              { isAuthenticated ? <Redirect to="/home"/> : <Login />}
               </Route>
 
               <Route exact path="/resources">
@@ -57,7 +66,7 @@ function App() {
               </Route>
 
               <Route exact path="/home">
-                {user ? <Home /> : <Login />}
+                {isAuthenticated ? <Home /> : <Login />}
               </Route>
 
               <Route exact path="/hashtag">

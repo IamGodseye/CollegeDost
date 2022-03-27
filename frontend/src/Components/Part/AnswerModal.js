@@ -8,7 +8,7 @@ import { API } from "./API";
 import { Snackbar } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useDispatch } from "react-redux";
-import { getAllPosts, getThisUserAllposts, getThisUserUnivposts } from "../../actions/postAction";
+import { getAllPosts, getThisUserAllposts, getThisUserUnivposts, getUserposts, getUserUnivposts } from "../../actions/postAction";
 import { getCollegePosts } from "../../actions/collegePostAction";
 
 const AnswerModal = (props) => {
@@ -67,6 +67,8 @@ const AnswerModal = (props) => {
       dispatch(getAllPosts());
       dispatch(getThisUserAllposts(props.id));
       dispatch(getThisUserUnivposts(props.id));
+      dispatch(getUserposts());
+      dispatch(getUserUnivposts());
       handleClick();
       props.setText("");
       setShowModal(false);
@@ -93,6 +95,8 @@ const AnswerModal = (props) => {
       handleClick();
       dispatch(getThisUserAllposts(props.id));
       dispatch(getThisUserUnivposts(props.id));
+      dispatch(getUserposts());
+      dispatch(getUserUnivposts());
       props.setText("");
       setShowModal(false);
     }

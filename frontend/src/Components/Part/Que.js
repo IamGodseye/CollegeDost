@@ -86,8 +86,8 @@ export default function Question(props) {
         dispatch(getAllPosts());
         dispatch(getUserposts());
         dispatch(getCollegePosts());
-         dispatch(getThisUserAllposts(props.postedBy._id));
-    dispatch(getThisUserUnivposts(props.postedBy._id));
+        dispatch(getThisUserAllposts(props.postedBy._id));
+        dispatch(getThisUserUnivposts(props.postedBy._id));
       })
       .catch((e) => {
         console.log("Error  :" + e);
@@ -162,10 +162,10 @@ export default function Question(props) {
       )
       .then((res) => {
         dispatch(getAllPosts());
-                dispatch(getUserposts());
+        dispatch(getUserposts());
         dispatch(getCollegePosts());
-         dispatch(getThisUserAllposts(props.postedBy._id));
-    dispatch(getThisUserUnivposts(props.postedBy._id));
+        dispatch(getThisUserAllposts(props.postedBy._id));
+        dispatch(getThisUserUnivposts(props.postedBy._id));
         console.log(res);
       })
       .catch((e) => {

@@ -928,6 +928,15 @@ router.get('/getUsers', async (req, res) => {
 });
 
 
+router.get('/loadUser',reqLogin,async (req, res) => {
+    console.log("loads");
+    await User.findById(req.user._id).select("-password").then((u) => {
+        res.status(201).json({ user: u });
+    })
+});
+
+
+
 router.post('/forgotPassword', async (req, res) => {
     const { email } = req.body;
     try {

@@ -36,6 +36,7 @@ const ForgotPassword = (props) => {
         });
         console.log(pass.data);
         if (pass.data.success) {
+            setEmail("");
             setMessage("You have been sent an verification link to change your password,Please do check in your spam folder too");
         } else if (!pass.data.success) {
             setEmail("");
@@ -76,6 +77,7 @@ const ForgotPassword = (props) => {
                         name="email"
                         autoComplete="off"
                         placeholder="Enter email"
+                        value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
                     <p

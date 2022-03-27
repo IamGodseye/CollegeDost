@@ -54,14 +54,14 @@ const Login = () => {
 
   const setAvatar = (e) => {
     e.preventDefault();
-    console.log(e.target.src);
     setAvatars(e.target.src);
     setSignup({ ...signup, avatar: avatar });
     console.log(signup);
     toast({
       title: "Avatar Selected",
       status: "success",
-      isClosable:true
+      isClosable: true,
+      position:"top-right"
     })
   };
 

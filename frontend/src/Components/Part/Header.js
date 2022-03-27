@@ -6,16 +6,21 @@ import logo from "./clg-dost.png";
 import { useState } from "react";
 import axios from "axios";
 import { List, ListItem } from "@material-ui/core";
+import { useSelector } from "react-redux";
 
 export default function Header() {
+  
   const [searchs, setSearch] = useState("");
+  const { user,isAuthenticated } = useSelector((state) => state.loadUserReducer);
   const history = useHistory();
+
   const Logout = async() => {
      localStorage.removeItem("jwt");
      localStorage.removeItem("user");
     history.push("/");
     window.location.reload();
   };
+
   return (
     <div>
       <nav class="navbar navbar-expand-lg navbar-dark ">
@@ -98,8 +103,8 @@ export default function Header() {
           <img
             className="profile_pic mr-2"
             src={
-              JSON.parse(localStorage.getItem("user")).avatar
-                ? JSON.parse(localStorage.getItem("user")).avatar
+            user?.avatar
+                ? user?.avatar
                 : "https://res.cloudinary.com/harshit111/image/upload/v1627476410/q1rjnignh5djpnujltyy.png"
             }
             style={{

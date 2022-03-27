@@ -12,6 +12,7 @@ import ChangingProgressProvider from "./ChangingProgress";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { API } from "./API";
 import { useToast } from '@chakra-ui/react';
+import { loadUser } from "../../actions/userAction";
 
 const LoginValues = {
   email: "",
@@ -47,8 +48,9 @@ const Login = (props) => {
       console.log(res.data);
       if (res.data.success) {
         console.log(res.data);
-        dispatch({type:"LOGIN_SUCCESS",payload:res.data.user});
+        dispatch({ type: "LOGIN_SUCCESS", payload: res.data.user });
         localStorage.setItem("jwt",res.data.token);
+        dispatch(loadUser());
         window.location.reload();
         toast({
           title: "Success",
