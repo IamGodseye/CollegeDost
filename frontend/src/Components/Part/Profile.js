@@ -58,7 +58,7 @@ const Profile = () => {
           />
           <div>{user?.name}</div>
           <div>{user?.email}</div>
-          <div>{user?.university}</div>
+          <div>University :{user?.university}</div>
           <div> Posts : {posts?.length + univposts?.length}</div>
         </div>
 

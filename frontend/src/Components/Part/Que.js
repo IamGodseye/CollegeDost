@@ -70,8 +70,6 @@ export default function Question(props) {
   const likePost = async (postId) => {
     await takeBackDislike(postId);
     handleClick();
-    console.log("Liking");
-    console.log(postId);
     await axios
       .put(
         `${API}/mainlike`,

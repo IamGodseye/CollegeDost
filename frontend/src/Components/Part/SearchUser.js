@@ -16,10 +16,15 @@ export default function SearchUser() {
   const { search } = useLocation();
   console.log(search);
   const getAllResources = async () => {
+    console.log(search);
     const resources = await axios.post(
       `${API}/searchuser`,
       {
         query: search.replace("?", ""),
+      }, {
+        headers: {
+             Authorization:localStorage.getItem("jwt"),
+        }
       }
     );
     console.log(resources.data);

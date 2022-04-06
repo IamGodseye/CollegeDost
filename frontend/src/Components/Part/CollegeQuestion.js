@@ -173,7 +173,7 @@ export default function CollegeQuestion(props) {
       )
       .then((res) => {
         dispatch(getCollegePosts());
-          dispatch(getUserposts());
+        dispatch(getUserposts());
         dispatch(getUserUnivposts());
         console.log(res);
       })

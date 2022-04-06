@@ -781,12 +781,13 @@ router.get('/getUserPostById/:id', reqLogin, async (req, res) => {
 });
 
 
-router.post('/searchuser', async (req, res) => {
+router.post('/searchuser', reqLogin,async (req, res) => {
+    console.log("......");
     const keyword = req.body.query
         ? {
             $or: [
-                { name: { $regex: req.query.search, $options: "i" } },
-                { email: { $regex: req.query.search, $options: "i" } },
+                { name: { $regex: req.body.query, $options: "i" } },
+                { email: { $regex: req.body.query, $options: "i" } },
             ],
         }
         : {};

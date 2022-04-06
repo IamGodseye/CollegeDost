@@ -56,23 +56,6 @@ const Home = (props) => {
       </div>
 
       <div className="sec-nav">
-        {/* {
-          loadingAllHashtags && (
-            <div
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                marginLeft: "10%",
-              }}
-            >
-              <span
-                className="spinner-border spinner-border-lm"
-                role="status"
-                aria-hidden="true"
-              ></span>
-            </div>
-          )
-        } */}
         {
           errorAllHashtags && (
             <div>
